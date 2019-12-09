@@ -1,0 +1,181 @@
+<h1>Filters help</h1>
+
+<table class="table">
+<thead>
+    <tr>
+        <th>Filter name</th>
+        <th>Description</th>
+        <th>Example(s)</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>any</td>
+        <td>Tries to match as a substring in any of the tags. This is also the default filter, the compiler falls back to using it when the expression provided does not match anything.</td>
+        <td>
+            any:foobar<br/>
+            foobar
+        </td>
+    </tr>
+    <tr>
+            <td>meta</td>
+            <td>Matches against the specified member of the CatalogFile interface.</td>
+            <td>
+                meta:tags.content.type=image/*<br/>
+            </td>            
+        </tr>
+        <tr>
+                <td>id</td>
+                <td>Matches against the unique ID of the catalog.</td>
+                <td>
+                    id:http://127.0.0.1:9000/bucket/subdir
+                </td>
+            </tr>
+            <tr>
+                    <td>filesize</td>
+                    <td>Matches against the filesize. Numeric operators can be used, typical units can be used at the number specification.</td>
+                    <td>
+                        filesize &lt;= 5M
+                    </td>
+            </tr>
+            <tr>
+                    <td>width</td>
+                    <td>Matches against the width of the media content. Numeric operators can be used.</td>
+                    <td>
+                        width &gt;= 1024
+                    </td>
+            </tr>
+            <tr>
+                    <td>height</td>
+                    <td>Matches against the height of the media content. Numeric operators can be used.</td>
+                    <td>
+                        height &gt;= 768
+                    </td>
+            </tr>
+            <tr>
+                    <td>duration</td>
+                    <td>Matches against the height of the duration (second) of the video content. Numeric operators can be used. Filters out non-video content.</td>
+                    <td>
+                        duration &gt;= 60
+                    </td>
+            </tr>
+            <tr>
+                    <td>tag</td>
+                    <td>Fine matching against tags as string. Wildcards are supported (by default partial matches are discarded).</td>
+                    <td>
+                        Find files having exact filename some.jpg: tag:content.filename=some.jpg<br/>
+                        Find any files starting with name some: tag:content.filename=some*<br/>
+                        Find any files having the word some in their name: tag:content.filename=*some*<br/>
+                        Find any content having any tags starting with family: tag:family*=*<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>not</td>
+                    <td>Negates the next part of the filter expression.</td>
+                    <td>
+                        not tag:family*=*<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>date<br/>date.any</td>
+                    <td>Matches against any of the date tags (upload, creation, mtime). Date target needs to be specified as yyyy-mm-dd.</td>
+                    <td>
+                        date >= 2019-11-01<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>date.upload<br/>date.creation<br/>date.mtime</td>
+                    <td>Matches against the upload, cration or last modification date of the content, respectively. See also: date, date.any</td>
+                    <td>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>yearmonth<br/>yearmonth.any</td>
+                    <td>Matches against any of the year and month portion of date tags (upload, creation, mtime). Date target needs to be specified as yyyy-mm.</td>
+                    <td>
+                        yearmonth >= 2019-11<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>yearmonth.upload<br/>yearmonth.creation<br/>yearmonth.mtime</td>
+                    <td>Matches against the year and month portion of the upload, cration or last modification date of the content, respectively. See also: yearmonth, yearmonth.any</td>
+                    <td>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>year<br/>year.any</td>
+                    <td>Matches against any of the year portion of date tags (upload, creation, mtime). Date target needs to be specified as yyyy.</td>
+                    <td>
+                        year >= 2019<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>year.upload<br/>year.creation<br/>year.mtime</td>
+                    <td>Matches against the year of the upload, cration or last modification date of the content, respectively. See also: year, year.any</td>
+                    <td>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>month<br/>month.any</td>
+                    <td>Matches against any of the month portion of date tags (upload, creation, mtime). Date target needs to be specified as mm.</td>
+                    <td>
+                            month >= 11<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>month.upload<br/>month.creation<br/>month.mtime</td>
+                    <td>Matches against the month of the upload, cration or last modification date of the content, respectively. See also: month, month.any</td>
+                    <td>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>day<br/>day.any</td>
+                    <td>Matches against any of the day portion of date tags (upload, creation, mtime). Date target needs to be specified as dd.</td>
+                    <td>
+                            day >= 11<br/>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>day.upload<br/>day.creation<br/>day.mtime</td>
+                    <td>Matches against the day of the upload, cration or last modification date of the content, respectively. See also: day, day.any</td>
+                    <td>
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>and</td>
+                    <td>Operator to evaluate the expression using the boolean AND conditional operator between filters.</td>
+                    <td>
+                            tag:content.filename=some.jpg and filesize &lt;= 5M
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>or</td>
+                    <td>Operator to evaluate the expression using the boolean OR conditional operator between filters.</td>
+                    <td>
+                            tag:content.filename=some.jpg or filesize &lt;= 5M
+                    </td>
+            </tr>
+
+            <tr>
+                    <td>parentheses</td>
+                    <td>Operator to group together multiple filter expressions and potentially combine them together with boolean operators. Inside a parentheses block only the same boolean operator may be used. Parentheses blocks can be nested.</td>
+                    <td>
+                        (tag:content.filename=some.jpg and width &lt; 2000) or (filesize &lt;= 5M)
+                    </td>
+            </tr>
+
+</tbody>
+</table>

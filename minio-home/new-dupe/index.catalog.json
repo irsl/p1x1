@@ -1,0 +1,68 @@
+{
+  "passwordBlock": {
+    "PasswordTest": {
+      "CipherOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "OAaXttaGo73mYXnV"
+      },
+      "WrappedSessionKey": {
+        "WrapOptions": {
+          "name": "AES-GCM",
+          "length": 256,
+          "iv": "DRgNVbCDQLFYUrBg"
+        },
+        "KeyOptions": {
+          "name": "AES-GCM",
+          "length": 256,
+          "iv": "V4Pd7gpj1CToIZov"
+        },
+        "WrappedKey": "9XiDJ2ZcBjMFrTNlFdHNcQmmxDm9UdY2UjdvFslJDZAXAO0aAqxxZkIxVAaGqjzKFA9fVial3rO76TmdO58L3/z4B5Q6OMQ0dKRRtFBnBw5DHEmHcf2VG9rQpGXX1HTIhxgOgMxjy6XG9jg4Qgv83nsrp+UA2vngdVAtawsxFHynI280xFZlOFkqqoCzQW8BldFFvUTSs41eGj9nmZKc6A=="
+      },
+      "CipherText": "M2qzCST5mHcVQWMHMRcaJ2+vOm2yMDObvSo5QwBZiPQ="
+    },
+    "WrappedMasterKeys": [
+      {
+        "DeriveAlgo": "SHA-256",
+        "DeriveOptions": {
+          "name": "AES-GCM",
+          "length": 256
+        },
+        "WrappedKey": {
+          "WrapOptions": {
+            "name": "AES-GCM",
+            "length": 256,
+            "iv": "VcxDzS8fImwg/GBa"
+          },
+          "KeyOptions": {
+            "name": "AES-GCM",
+            "length": 256,
+            "iv": "K4qvc7QfWsBINHtd"
+          },
+          "WrappedKey": "Uf2DDnp2MtoTZ3+puLz5W+/rRL+eSRs71UMDEMTmmJwt51f6BRqGECeCvPwSN9tIJZA2LlhuC+6hd+P7DJq0mREykvOxt9QO1Q6xPrjZAuwMvh08P1paLcf2qniEOPVtwOTuRz6eDosSRXxsUsQHXpuidgUDTcAcfDU2E1QrsICpxfg3ZRJapEKOX6fYDTOSfPZblpwBLbvPKAjfq/NUhA=="
+        }
+      }
+    ]
+  },
+  "files": {
+    "CipherOptions": {
+      "name": "AES-GCM",
+      "length": 256,
+      "iv": "vnllvq4NOSYaDjhQ"
+    },
+    "WrappedSessionKey": {
+      "WrapOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "wIO+LDOnJV9DGYT6"
+      },
+      "KeyOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "YtMNejVCQVThviNM"
+      },
+      "WrappedKey": "iq7mOpVg4C1BEHg56HxxQiRFBlGsyaVeFaBcsv2ho8/J7UiGg/ss6u/LXS8wCcX+TlOY12QRQYl81L94867vt8gkCQIvA/8nLlTHRi4I4S2g6vLryEPLzMCzSJeVqn6C/msxRsa8whugQFO+Je28WdugAeFL5oFvL0NbEqgDVHMlxdWe8SHFgO+VH3X/ZaEdJbh+7VTDE+6RuodCvLdwPw=="
+    },
+    "CipherText": "2huy7Y7wE04ur2d4Z56IsA8h2kwfPbSuRddiQiprvVl+3S0zH1Pskeau8DOsO0B2bHvXU8QAL7O9kAtem6hhH7FFnC9JjzeC+shf2QMAFAVTaJo32Qm20YULYXZTPLF0+T4LUJVX9ix+07ka1Ekr95kb9CFJf2ymoDwJzew7NavqQJHHaHMjL6J40IRvsLX2EposK+QnCPaZUft6u7mPva7Vh7SrsWracn1uftDRUEuFW7Rky4U7IvNg67kQp3VxpLHMyvsauz7xm9pjfNR9mQ2mgolrqxyYKUazDkmSAqFW6BAMQ4jc+/w7OqZcUm35JNOXUaeL0s8/ukzPeCQc28jAfB1Rt52FVJlqx/XU0zYHRX6nDJR6cvhQc9V8LGR+Q/46p4Ls7tAniB0HBDTmvkB15xiVplF/+38/3a3VBoYWY5Kskpweeimub5VRSXM/dHqxu4f4g8BAPUHGLVtin/S7kokhc4GDQYObboNzRcqH7QNuoDy/fnVo4zVdv3f+q3/tS68NZ76sc+coSx7nHFn2uj9nGRYx6q/nqyVVbrbv7e61HGwliYFmu8nqfBG5b4NRxiqnsHf0OiNriSoq+ErSY6tbohDskrA6STr+n7GONSpaBCAaEtU9g+IOLlA6DLBrcCN3mZhsw3y8/oHPuizZpUUdqMpy3vHWAGp0hj/YrlKJt1/9KnAHcPtPrI+lwiOnlW7efxrR6ZKw5s80brPnX9F0h1heCxjF7Q0hw1HAZoCTt1wOdHEX7LUjAtihgkGj7X9p0XQhVl7a6F+B4O8ohg56X5smUsVHhmgAlmGNUWeFOa2FF2YlrQq/0vg19sVoqJG8D13Nt35ZykRmXYIenwKMFFXe6GfTQ5zNFYzGOH4ZmOpVDriucEm/9nBBD97XRnpk3xKFwNhOimXppxLffRh+EtMJwiDqzP4pg88EbnXCAT7I9XgmDY/PsLmyeHAL6pePeN5FTBURFhN71+KGitO9ZtfSBqQ/MK2YG1MY4OG1XJcj0i7qrflTb8mNkdXjre0upYlmoO9Cgf05jISsRgvLVDExmt9IGcIdKTBGwGTTgWYzeRjztidnvb/USIsPFA3SMDfD"
+  }
+}

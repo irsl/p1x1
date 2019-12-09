@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "versions": [
+        {"versionName":"", "contentType": "image/jpeg"}
+      ],
+      "tags": {
+        "bar": "xxx",
+        "content.filename": "filename2.jpg",
+        "content.size": 9,
+        "content.type": "image/jpeg",
+        "date.mtime": "2019-11-17T11:45:54.216Z",
+        "hash.SHA-256": "e6517e54d50498270b6530678fcbd45ad63cd066b8cc7ad084118f46ab8f93ad",
+        "date.upload": "2019-11-17T11:45:54.217Z"
+      }
+    }
+  ]
+}

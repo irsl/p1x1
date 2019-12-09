@@ -1,0 +1,198 @@
+/* Add application styles & imports to this file! */
+.margin-top {
+    margin-top: 20px;
+}
+
+.console-like {
+    /*
+    background-color: lightgray;
+    */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9pt;
+}
+.console-like p {
+    margin-bottom: 0px;
+}
+/*
+.console-like {
+    color: white;
+}
+*/
+
+
+@media (min-width: 768px) {
+    #catalogList {
+        margin: 0 1rem;
+        position: relative;
+        left: 0;
+        z-index: 1;
+        top: 0;
+        -webkit-animation: none;
+        animation: none;
+    }    
+    #catalogList .catalogList-inner {
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .sidebar.toggled #catalogList {
+       display: none;
+    }
+}
+
+#catalogList .catalogList-inner {
+    padding: .5rem 0;
+    min-width: 10rem;
+    font-size: .85rem;
+    margin: 0 0 1rem 0;
+}
+#catalogList .catalogList-item {
+    padding: .1rem 0.5rem;
+    /*
+    margin: 0 .5rem;
+    */
+    display: block;
+    color: #3a3b45;
+    text-decoration: none;
+    border-radius: .35rem;
+}
+
+#catalogList a {
+    word-wrap: break-word;
+    white-space: normal;
+    padding: 0px;
+} 
+#catalogList .catalogList-item:hover {
+    background-color: #eaecf4;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-filter {
+    font-size: 14px;
+    width: 100%;
+    padding: 8px;
+}
+
+nav.topbar div.full-width, .full-width, .full-width-fields mat-form-field, .full-width-fields mat-slider {
+    width: 100%;
+}
+
+.drag-n-drop {
+    display: border-box;
+    border: 2px dashed #5c5b5b;
+    height: 6rem;
+}
+.drag-n-drop > p {
+    text-align: center;
+    font-weight: 700;
+    color: #5c5b5b;
+    margin-top: 2.4em;
+}
+
+.mat-radio-button {
+    margin-left: 16px;
+}
+
+.mat-radio-group label {
+    margin-bottom: -2px;
+}
+
+small.password-feedback {
+    display: block !important;
+}
+
+table.short-last-column td:last-child
+{
+    width: 50px;
+}
+.mat-elevation-z8 {
+    margin-bottom: 30px;
+}
+
+table.catalogContentTable .dropdown-toggle {
+  margin-right: 0.6rem;
+  cursor: pointer;
+}
+table.catalogContentTable label.mat-checkbox-layout {
+   margin-bottom: 0px;
+}
+.mat-column-select {
+    overflow: initial;
+}
+#caman-canvas, #video-container {
+   display: none;
+}
+
+
+.do-break-words {
+
+    word-wrap: break-word;
+    word-break: break-all;
+}
+angular-tag-cloud span {
+    cursor: pointer;
+}
+
+div.buttons {
+    text-align: center;
+}
+div.buttons button {
+    margin-bottom: 10px;
+}
+
+.imageBox {
+    margin-right: 25px;
+    margin-bottom: 25px;
+    padding: 10px;
+    text-align: center;
+    float: left;
+    background: white;
+    border: 1px solid #4e73df;
+}
+
+.imageBoxImage {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+}
+.imageBoxImage img {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.imageBoxCaption {
+    margin-top: 10px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+.clear-fix {
+   clear: both;    
+}
+
+.tagCloud {
+    padding-left: 20px;
+    padding-right: 20px;
+    overflow: visible;
+}
+
+#image-editor-container {
+    text-align: center;    
+}
+#image-editor-container img {
+    display: none;
+}
+#image-editor-container canvas {
+    max-width: 100%;
+}
+#tensorflow-container-id {
+    display: none;
+}
+
+label input[type=checkbox] {
+    padding-right: 10px;
+}
+
+table tr td .mat-form-field-infix {
+    width:auto !important;
+}

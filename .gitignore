@@ -1,0 +1,8 @@
+debug.log
+node_modules/**
+minio-home/.minio.sys/buckets/**
+minio-home/.minio.sys/multipart/**
+minio-home/.minio.sys/tmp/**
+minio-home/bucket-via-webui/**
+dist/**
+gh-pages/**

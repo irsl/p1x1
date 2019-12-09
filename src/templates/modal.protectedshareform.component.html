@@ -1,0 +1,70 @@
+<div class="modal-header">
+    <h4 class="modal-title">Share files of a cleartext catalog</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close(null)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <form [formGroup]="protectedForm.form" class="full-width-fields">
+        <mat-form-field>
+            <input matInput  type="text" placeholder="Enter the name of the share" formControlName="shareName" />        
+            <mat-error [showFirstError]="protectedForm.form.get('shareName')"></mat-error>
+        </mat-form-field>                  
+
+        <label>Expiration:</label>
+        <table class="table" formGroupName="expiration">
+            <tr>
+                <td>
+                    <mat-form-field>
+                        <input matInput  type="number" placeholder="Days" formControlName="days" />        
+                        <mat-error [showFirstError]="protectedForm.form.get('expiration').get('days')"></mat-error>
+                    </mat-form-field>                    
+                </td>
+                <td>
+                    <mat-form-field>
+                        <input matInput  type="number" placeholder="Hours" formControlName="hours" />        
+                        <mat-error [showFirstError]="protectedForm.form.get('expiration').get('hours')"></mat-error>
+                    </mat-form-field>                            
+                </td>
+                <td>
+                    <mat-form-field>
+                        <input matInput  type="number" placeholder="Minutes" formControlName="minutes" />        
+                        <mat-error [showFirstError]="protectedForm.form.get('expiration').get('minutes')"></mat-error>
+                    </mat-form-field>                            
+                </td>
+                <td>
+                    <mat-form-field>
+                        <input matInput  type="number" placeholder="Seconds" formControlName="seconds" />        
+                        <mat-error [showFirstError]="protectedForm.form.get('expiration').get('seconds')"></mat-error>
+                    </mat-form-field>                            
+                </td>
+            </tr>
+        </table>
+
+        <div class="margin-top">
+            <mat-checkbox formControlName="generateRandomPassword" (change)="randomChange()"> Just generate a random password and include it into the URL</mat-checkbox>
+        </div>
+
+        <div [hidden]=" generateRandomPassword">
+            <mat-form-field>
+            <input matInput type="password" placeholder="Enter password here" formControlName="password" type="password" required/>
+            <mat-error [showFirstError]="protectedForm.form.get('password')"></mat-error>
+            </mat-form-field>
+            <div>
+            <label>Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters. Strength of your password:</label>
+            <password-strength-meter [password]="protectedForm.form.get('password').value" [enableFeedback]="true"></password-strength-meter>
+            </div>
+
+            <mat-form-field>
+            <input matInput  type="text" placeholder="Hint about the password for later reference" formControlName="comment" required/>        
+            <mat-error [showFirstError]="protectedForm.form.get('comment')"></mat-error>
+            </mat-form-field>                  
+        </div>
+      </form>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="protectedForm.onSubmit()">Share</button>
+    <button type="button" class="btn btn-light" (click)="modal.close(null)">Close</button>
+</div>

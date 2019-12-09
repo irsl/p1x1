@@ -1,0 +1,93 @@
+<h1>Create new subcatalog</h1>
+<catalogWritableSelection [(destinationCatalogId)]="destinationCatalogId" [(destinationCatalog)]="destinationCatalog">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                        <mat-form-field class="full-width">
+                                <mat-label>Select type of the subcatalog</mat-label>
+                                <mat-select [(value)]="creationType">
+                                    <mat-option value="CreateClearSubCatalog">Create cleartext subcatalog</mat-option>
+                                    <mat-option value="CreatePasswordProtectedSubCatalog">Create password protected subcatalog</mat-option>
+                                    <mat-option value="CreateKeyDerivedSubCatalog">Create key derived subcatalog</mat-option>
+                                </mat-select>
+                        </mat-form-field>
+
+            <div *ngIf="creationType == 'CreateClearSubCatalog' ">
+
+                    <div class="alert alert-danger" role="alert">
+                            Files uploaded to unprotected catalogs rest completely clear text, meaning the storage provider would be able to inspect them.
+                        </div>
+                    <form [formGroup]="createClearText.form" (ngSubmit)="createClearText.onSubmit()" class="full-width-fields">
+
+                        <mat-form-field >
+                                    <input matInput placeholder="Name of the subdirectory" formControlName="subdir" >
+                                    <mat-error [showFirstError]="createClearText.form.get('subdir')"></mat-error>
+                        </mat-form-field>                  
+            
+
+                        <div class="text-center margin-top">
+                            <button class="btn btn-success" [disabled]="!destinationCatalogId" type="submit" >Create cleartext subcatalog</button>
+                        </div>
+                </form>
+            </div>
+
+
+            <div *ngIf="creationType == 'CreatePasswordProtectedSubCatalog' ">
+
+
+                    <form [formGroup]="createPasswordProtected.form" (ngSubmit)="createPasswordProtected.onSubmit()" class="full-width-fields">
+
+                        <mat-form-field >
+                                    <input matInput placeholder="Name of the subdirectory" formControlName="subdir" >
+                                    <mat-error [showFirstError]="createPasswordProtected.form.get('subdir')"></mat-error>
+                        </mat-form-field>   
+
+                        <mat-form-field >
+                                <input matInput placeholder="Password" formControlName="password" type="password" >
+                                <mat-error [showFirstError]="createPasswordProtected.form.get('password')"></mat-error>
+                        </mat-form-field>  
+                        <div>
+                            <label>Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters. Strength of your password:</label>
+                            <password-strength-meter [password]="createPasswordProtected.form.get('password').value" [enableFeedback]="true"></password-strength-meter>
+
+                        </div>
+                    
+                        <mat-form-field >
+                                <input matInput placeholder="Comment for later reference" formControlName="comment" >
+                                <mat-error [showFirstError]="createPasswordProtected.form.get('comment')"></mat-error>
+                        </mat-form-field>     
+
+                        <div class="text-center margin-top">
+                            <button class="btn btn-success" [disabled]="!destinationCatalogId" type="submit" >Create password protected subcatalog</button>
+                        </div>
+                    </form>
+            </div>
+
+            <div *ngIf="creationType == 'CreateKeyDerivedSubCatalog' ">
+
+                    <div class="alert alert-info" role="alert">
+                            Key derived catalogs use the encryption key of the parent catalog to derive a new master key for the subcatalog.
+                            By having the master key (or the password that unlocks it) of the parent catalog, the subcatalog can be opened too.
+                            If you need, you can assign additional passwords to key derived subcatalogs later on: passwords that unlock the master key of the subcatalog so they can be opened directly without knowing anything about the parent catalog.
+                        </div>
+
+                <form [formGroup]="createKeyDervived.form" (ngSubmit)="createKeyDervived.onSubmit()" class="full-width-fields">
+
+                    <mat-form-field >
+                                <input matInput placeholder="Name of the subdirectory" formControlName="subdir" >
+                                <mat-error [showFirstError]="createKeyDervived.form.get('subdir')"></mat-error>
+                    </mat-form-field>   
+
+                    <div class="text-center margin-top">
+                        <button class="btn btn-success" [disabled]="!destinationCatalogId" type="submit" >Create key derived subcatalog</button>
+                    </div>
+                </form>
+        </div>            
+
+        </div>
+    </div>
+    </div>
+
+
+</catalogWritableSelection>

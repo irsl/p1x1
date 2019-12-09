@@ -1,0 +1,85 @@
+<h1 class="h3 mb-4 text-gray-800">Mounting a new catalog</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+
+      <!-- Circle Buttons -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Adding a new S3 catalog</h6>
+        </div>
+        <div class="card-body">
+          <p>Use Font Awesome Icons (included with this theme package) along with the circle buttons as shown in the examples below!</p>
+         
+
+          <form [formGroup]="s3.form" (ngSubmit)="s3.onSubmit()" class="full-width-fields">
+              <div class="form-group row">
+                <div class="col-sm-9 mb-3 mb-sm-0">
+                      <mat-form-field >
+                        <input matInput placeholder="hostname" formControlName="hostname" required>
+                        <mat-error [showFirstError]="s3.form.get('hostname')"></mat-error>
+                      </mat-form-field>                  
+                </div>
+                <div class="col-sm-3">
+                    <mat-form-field >
+                      <input matInput type=number placeholder="port" formControlName="port">
+                    </mat-form-field>                  
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <mat-form-field >
+                    <input matInput type="text" placeholder="bucket" formControlName="bucket" required>
+                    <mat-error [showFirstError]="s3.form.get('bucket')"></mat-error>
+                  </mat-form-field>                  
+               </div>
+                <div class="col-sm-6">
+                  <mat-form-field >
+                    <input matInput type="text" placeholder="subdir" formControlName="subdir">
+                  </mat-form-field>                  
+                </div>
+              </div>
+            <div class="form-group row" formGroupName="credentials">
+                <div class="col-sm-6">
+                  <mat-form-field >
+                    <input matInput type="text" placeholder="access key ID" formControlName="accessKeyId" required>
+                    <mat-error [showFirstError]="s3.form.get('credentials').get('accessKeyId')"></mat-error>
+                  </mat-form-field>                  
+                </div>
+              <div class="col-sm-6">
+                <mat-form-field >
+                  <input matInput type="password" placeholder="secret access key" formControlName="secretAccessKey">
+                  <mat-error [showFirstError]="s3.form.get('credentials').get('secretAccessKey')"></mat-error>
+                </mat-form-field>                  
+            </div>
+            </div>
+  
+          <mat-form-field >
+              <mat-select placeholder="Select network security mode" formControlName="https" required>
+                  <mat-option value="true">encrypted (https)</mat-option>
+                  <mat-option value="false">unencrypted (clear http)</mat-option>
+                </mat-select>
+            <mat-error [showFirstError]="s3.form.get('https')"></mat-error>
+          </mat-form-field>                  
+
+          <mat-form-field >
+              <mat-select placeholder="Select if subdomain mode shall be used" formControlName="useSubdomains" required>
+                  <mat-option value="true">yes (AWS S3)</mat-option>
+                  <mat-option value="false">no</mat-option>
+                </mat-select>
+              <mat-error [showFirstError]="s3.form.get('useSubdomains')"></mat-error>
+            </mat-form-field>                  
+    
+  
+              <hr>
+              <button class="btn btn-primary btn-user btn-block" type="submit">
+                Mount catalog
+              </button>
+            </form>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>

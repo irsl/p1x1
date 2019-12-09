@@ -1,0 +1,36 @@
+ <div class="modal-header">
+    <h4 class="modal-title">Master key of protected catalog</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close(false)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+     <div>Catalog: {{catalogId}}</div>
+
+     <textarea class="form-control" rows=5 readonly [(ngModel)]="keyAsJson" ></textarea>
+
+     <div *ngIf="offerSave">
+
+        <div class="input-group mb-3 margin-top">
+                <div class="alert alert-info" role="alert">
+                    Using this feature, you can cache this master key in your browser's storage locally so you won't 
+                    need to type the password of this catalog every single time you open it.
+                </div>
+                    <div class="alert alert-danger" role="alert">
+                            Do not cache this key unless this is a trusted computer not shared with anyone else and
+                    you have already created an offline backup of the key displayed above.
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                            Losing this key and forgetting the passphrase as well will result in unrecoverable data loss!
+                </div>
+            
+            <input type="text" class="form-control" placeholder="Comment for later reference" [(ngModel)]="comment" />
+            <div class="input-group-append">
+               <button class="btn  btn-outline-secondary" href (click)="close(true)">Cache this key</button>
+            </div>
+        </div>
+     </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="close(false)">Close</button>
+  </div>

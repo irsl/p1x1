@@ -1,0 +1,254 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+
+      <h1>Catalog</h1>
+      <div>Selected catalog: {{catalogRoute.currentlySelectedCatalogId}}</div>
+      <div [hidden]="!catalogRoute.searchPhrase">Search expression: {{catalogRoute.searchPhrase}}</div>
+      <div [hidden]="!filter">Compiled expression: {{filter?.asString()}}</div>
+      <div [hidden]="!filterError" class="text-danger">Compilation failure: {{filterError}}</div>
+      </div>
+      <div class="col-sm-3 buttons margin-top">
+          <button [ngClass]="{'btn-info': viewType=='table',     'btn-light': viewType!='table'}"      class="btn btn-large" (click)="setViewMode('table')"><i class="fas fa-receipt"></i> Details</button>
+          &nbsp;
+          <button [ngClass]="{'btn-info': viewType=='largeIcons','btn-light': viewType!='largeIcons'}" class="btn btn-large" (click)="setViewMode('largeIcons')"><i class="fas fa-th-large"></i> Large icon</button>
+          &nbsp;
+          <span class="dropdown" *ngIf="viewType=='largeIcons'">
+              <button class="btn btn-secondary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Sort <i class="fas fa-sort"></i> 
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href (clickNoPropagate)="setLargeIconsSortMode('filename')"><i *ngIf="largeIconsSortMode=='filename'" class="fas fa-check"></i> Filename</a>
+                <a class="dropdown-item" href (clickNoPropagate)="setLargeIconsSortMode('uploadDate')"><i *ngIf="largeIconsSortMode=='uploadDate'" class="fas fa-check"></i> Upload date</a>
+              </div>
+            </span>
+      </div>
+  </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+  <div [hidden]="hits" class="margin-top">    
+
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%; height: 20px;">Search in progress</div>
+
+  </div>
+
+  <h3 class="margin-top">Hits</h3>
+  <div [hidden]="viewType!='table'">
+
+    <div class="mat-elevation-z8" [hidden]="!hits || !hits.length">
+
+
+    <table width="100%"  mat-table [dataSource]="datasource" matSort class="catalogContentTable">
+
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggleAndSelectionChanged() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+
+              </th>
+              <td mat-cell *matCellDef="let row">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                  (change)="$event ? toggleSelection(row) : null"
+                  [checked]="selection.isSelected(row)">
+                  </mat-checkbox>
+            </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+      <ng-container matColumnDef="filename">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Filename </th>
+            <td mat-cell *matCellDef="let element">
+              <a href (clickNoPropagate)="display(element)">{{element.filename}}</a> </td>
+            <td mat-footer-cell *matFooterCellDef>{{ hits?.length }} files</td>
+          </ng-container>
+
+          <ng-container matColumnDef="uploadDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Upload date </th>
+            <td mat-cell *matCellDef="let element"> {{element.uploadDate}}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="tagCount">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tags </th>
+            <td mat-cell *matCellDef="let element"> <a href (clickNoPropagate)="openTagEditor(element)">{{element.tagCount}}</a> </td>
+            <td mat-footer-cell *matFooterCellDef>{{ allTags }}</td>
+          </ng-container>
+
+            <ng-container matColumnDef="fileSizeHuman">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+              <td mat-cell *matCellDef="let element"> {{element.fileSizeHuman}} </td>
+              <td mat-footer-cell *matFooterCellDef>{{ sumSumFileSizeHuman }}</td>
+            </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;" (click)="doShowRightPane(row, true)"></tr>
+      <tr mat-footer-row *matFooterRowDef="columns"></tr>
+    </table>
+    <mat-paginator #tablePaginator [pageSizeOptions]="[100, 500, 1000]" showFirstLastButtons></mat-paginator>
+
+     </div>
+  </div>
+  <div [hidden]="viewType!='largeIcons'">
+
+     <div [hidden]="!hits || !hits.length">
+
+       <div class="imageBoxContainer">
+          <div *ngFor="let cv of currentViewWithLargeIcons" class="imageBox">
+             <div class="imageBoxImage"><a href (clickNoPropagate)="display(cv.catInfo)"><img [src]="cv.thumbnail"></a></div>
+             <div class="imageBoxCaption"><a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)">{{cv.catInfo.filename}}</a></div>
+          </div>
+       </div>
+
+       <br class="clear-fix" />
+
+       <mat-paginator #largeIconsPaginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+
+     </div>
+
+   </div>
+
+
+  <div [hidden]="!hits || hits?.length">
+    <div class="alert alert-info" role="alert">
+      No hits!
+    </div>
+  </div>
+
+  </div><!-- col-sm -->
+  <div id="info-panel" class="col-sm-3" >
+    <div *ngIf="!showRightPane">
+        <h3 class="margin-top">Actions</h3>
+        <div class="text-center">
+          <button class="btn btn-light" [routerLink]="['/catalog/upload', catalogRoute.currentlySelectedCatalogId]"><i class="fas fa-upload"></i> Upload</button>
+          &nbsp;
+          <button class="btn btn-light" [routerLink]="['/subcatalog/new', catalogRoute.currentlySelectedCatalogId, 'CreateKeyDerivedSubCatalog']"><i class="far fa-plus-square"></i> Create new subdir</button>
+        </div>
+
+        <h3 class="margin-top">Tags</h3>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Tag</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let st of tagStatisticsHead">
+                <td><a href (clickNoPropagate)="tagClicked(st)">{{st.text}}</a></td>
+                <td>{{st.weight}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="tagStatisticsRest.length > 0"><a href (clickNoPropagate)="showAllTags()" >Show additional {{tagStatisticsRest.length}} tags</a></div>
+
+        <h3 class="margin-top">File types</h3>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Content type</th>
+                <th scope="col">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let st of contentTypesStatistics">
+                    <td><a href (clickNoPropagate)="contentTypeClicked(st)">{{st.text}}</a></td>
+                    <td>{{st.weight}}</td>
+                  </tr>
+            </tbody>
+          </table>
+
+    </div>
+    <div *ngIf="showRightPane">
+      <div *ngIf="!showRightPaneCurrent">
+      <h3 class="margin-top">Selection info</h3>
+      <table>
+          <tr>
+            <td>Selected:</td>
+            <td>{{ selection.selected.length }} file(s)</td>
+          </tr>
+      </table>  
+      <h5 class="margin-top">Actions</h5>
+  
+      <div class="buttons">
+      <span *ngIf="selection.selected.length > 1">
+          <button class="btn btn-primary"  (click)="downloadSelectedFilesAsZip(this.lastClickedRow)"><i class="fas fa-file-archive"></i> Download as zip archive</button>
+          <span *ngIf="allWriteable">
+            &nbsp;
+            <button class="btn btn-danger"  (confirmAction)="removeSelectedFiles()" confirmMessage="Do you really want to remove the selected file?"><i class="fas fa-trash-alt"></i> Remove selected</button>
+            &nbsp;
+            <button class="btn btn-secondary" (click)="editTagsOfSelectedFiles()"><i class="fas fa-tags"></i> Tag editor</button>
+          </span>
+
+          <span *ngIf="shareFilesClear || shareFilesProtected">
+            &nbsp;
+            <button class="btn btn-secondary" (click)="share()"><i class="fas fa-share-alt-square"></i> Share</button>
+          </span>
+
+        </span>
+      <span *ngIf="selection.selected.length <= 1">
+          <button class="btn btn-primary" (click)="download(this.selection.selected[0])"><i class="fas fa-download"></i> Download</button>
+          <span *ngIf="allWriteable">
+              &nbsp;
+              <button class="btn btn-danger"  (confirmAction)="removeFile(this.selection.selected[0])" confirmMessage="Do you really want to remove this file?"><i class="fas fa-trash-alt"></i> Remove</button>
+              &nbsp;
+              <button class="btn btn-secondary" (click)="openTagEditor(this.selection.selected[0])"><i class="fas fa-tags"></i> Tag editor</button>
+          </span>
+
+          <span *ngIf="shareFilesClear || shareFilesProtected">
+            &nbsp;
+            <button class="btn btn-secondary" (click)="share()"><i class="fas fa-share-alt-square"></i> Share</button>
+          </span>
+      </span>
+      </div>
+  
+
+      </div>
+      <div *ngIf="showRightPaneCurrent">
+          <h3 class="margin-top">Current file</h3>
+          <div class="text-center">
+              <div><a href (clickNoPropagate)="display(lastClickedRow)"><img [src]="lastClickedPreview"></a></div>
+          </div>
+          <table>
+              <tr>
+                <td>Filename:</td>
+                <td class="do-break-words">{{ lastClickedRow.filename }}</td>
+              </tr>
+          </table>          
+          <h5 class="margin-top">Actions</h5>
+  
+          <div class="buttons">
+            <button class="btn btn-primary" (click)="download(lastClickedRow)"><i class="fas fa-download"></i> Download</button>
+            <span *ngIf="allWriteable">
+                &nbsp;
+                <button class="btn btn-danger"  (confirmAction)="removeFile(lastClickedRow)" confirmMessage="Do you really want to remove this file?"><i class="fas fa-trash-alt"></i> Remove</button>
+                &nbsp;
+                <button class="btn btn-secondary" (click)="openTagEditor(lastClickedRow)"><i class="fas fa-tags"></i> Tag editor</button>
+                <span *ngIf="lastClickedIsImage">
+                &nbsp;
+                <button class="btn btn-secondary" [routerLink]="['/image/edit', lastClickedRow.original.catalog.getUniqueId(), lastClickedRow.fileHash ]"><i class="fas fa-exchange-alt"></i> Image effects</button>
+                </span>
+            </span>
+
+            <span *ngIf="shareFilesClear || shareFilesProtected">
+            &nbsp;
+            <button class="btn btn-secondary" (click)="share()"><i class="fas fa-share-alt-square"></i> Share</button>
+            </span>
+          </div>
+      </div>
+
+      <h5 class="margin-top" [hidden]="selection.selected.length <= 1">Common tags</h5>
+      <h5 class="margin-top" [hidden]="selection.selected.length > 1">Tags</h5>
+      <div class="do-break-words">
+        <mat-chip-list>
+            <mat-chip  *ngFor="let tag of tagsToShow">{{tag.human}}</mat-chip>
+        </mat-chip-list>      
+      </div>
+      <div *ngIf="tagsToShow.length <= 0">No tags to show.</div>
+    </div>
+  </div>
+</div><!-- row -->
+</div><!-- container -->

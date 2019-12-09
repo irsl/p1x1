@@ -1,0 +1,36 @@
+<div *ngIf="writeableCatalogNames.length <= 0">
+        No writeable catalogs are loaded and thus no write operation is not possible.
+     </div>
+     
+<div  [hidden]="!writeableCatalogNames.length">
+
+    <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                        <mat-form-field class="full-width">
+                                <mat-label>Select destination catalog</mat-label>
+                                <mat-select [(value)]="destinationCatalogId" (selectionChange)="catalogChanged()">
+                                    <mat-option *ngFor="let catalog of writeableCatalogNames" [value]="catalog">
+                                    {{catalog}}
+                                    </mat-option>
+                                </mat-select>
+                        </mat-form-field>
+                </div>
+                <div class="col-sm">
+                    <div *ngIf="destinationCatalogId" class="margin-top">
+                        <div  *ngIf="destinationIsProtected" class="text-success">
+                                <i class="fas fa-lock"></i>
+                                This is a protected catalog.
+                        </div>
+                        <div  *ngIf="!destinationIsProtected" class="text-danger">
+                                <i class="fas fa-lock-open"></i>
+                                This catalog is unprotected!
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <ng-content></ng-content>
+
+</div>

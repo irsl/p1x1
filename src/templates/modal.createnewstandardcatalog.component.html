@@ -1,0 +1,50 @@
+ <div class="modal-header">
+    <h4 class="modal-title">Create new catalog</h4>
+    <button type="button" class="close" aria-label="Close" (click)="escape()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+   <div>Catalog: {{catalogId}}</div>
+
+   <div>
+     <label><input type="checkbox"  [(ngModel)]="passwordProtected" >I want to protect files at rest using a password</label>
+   </div>
+
+     <div *ngIf="passwordProtected">
+
+        <form [formGroup]="protectedForm.form" class="full-width-fields">
+          <mat-form-field>
+            <input matInput autoFocus type="password" placeholder="Enter password here" formControlName="password" type="password" required/>
+            <mat-error [showFirstError]="protectedForm.form.get('password')"></mat-error>
+          </mat-form-field>
+          <div>
+            <label>Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters. Strength of your password:</label>
+            <password-strength-meter [password]="protectedForm.form.get('password').value" [enableFeedback]="true"></password-strength-meter>
+          </div>
+
+          <mat-form-field>
+            <input matInput  type="text" placeholder="Hint about the password for later reference" formControlName="comment" required/>        
+            <mat-error [showFirstError]="protectedForm.form.get('comment')"></mat-error>
+          </mat-form-field>                  
+        </form>
+
+     </div>
+     <div *ngIf="!passwordProtected">
+        <div [hidden]="true">
+          <form [formGroup]="clearForm">
+          </form>
+        </div>
+  
+        <div class="alert alert-danger" role="alert">
+            Unprotected catalogs don't need a password for opening them, because their content is stored in clear. 
+            This means anyone with access to the files (including the storage provider) can inspect the files.
+            Use this method only for public content!
+        </div>
+     </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="callSubmit()">OK</button>
+    <button type="button" class="btn btn-light" (click)="escape()">Cancel</button>
+  </div>

@@ -1,0 +1,68 @@
+{
+  "passwordBlock": {
+    "PasswordTest": {
+      "CipherOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "JSk8gNw39zBUiR8v"
+      },
+      "WrappedSessionKey": {
+        "WrapOptions": {
+          "name": "AES-GCM",
+          "length": 256,
+          "iv": "Dxe5ByXhQAB7z0hd"
+        },
+        "KeyOptions": {
+          "name": "AES-GCM",
+          "length": 256,
+          "iv": "YhlyvDO320AnHUbJ"
+        },
+        "WrappedKey": "VSdxej3kaPXiWxwZAUKz5mtV0b54G3XRWwqO++cUqLKSOraSn0eZmHCGKbZmMMcpi4jWQWws/N5KHUEtGfQF+0IR+QSGcoqOdWBxSv/K0vjCiqRnw0UjUg2xYmhP4XM0a0hVNjG6/8RdJjp+ocxGiCVdwKs2hvKinLeKgMmVg6TjwYGQu4fi5T74RACca3EL+B+5afpbZb82puz+25G3dA=="
+      },
+      "CipherText": "aXTcjK4yhyGENodyZRks3xote6E0lAyElNgYoJN6PCs="
+    },
+    "WrappedMasterKeys": [
+      {
+        "DeriveAlgo": "SHA-256",
+        "DeriveOptions": {
+          "name": "AES-GCM",
+          "length": 256
+        },
+        "WrappedKey": {
+          "WrapOptions": {
+            "name": "AES-GCM",
+            "length": 256,
+            "iv": "q5D5BLtEGox8UVRp"
+          },
+          "KeyOptions": {
+            "name": "AES-GCM",
+            "length": 256,
+            "iv": "/LUX7lv/1QBlGl/b"
+          },
+          "WrappedKey": "iQtnlzxkN0AfTMM4vW9VHMer9I7jOVZjJ/LPgCBWMV9WWmN3WlhEdd8SGff+HnyrnsI3Bcwr5xygIKPlhZ1u9v/7CtCidIfem2MrnDzLbWLk2f6xBHD5mYWT3AtlBBvqX4ebStKMiMJBQBvK81buTNNgr9s4ydbc78Y1zz/UDVD7XXTj4grl9iqOP+mYj8hQgSzcA+X5Zh5nJzqdEk46hw=="
+        }
+      }
+    ]
+  },
+  "files": {
+    "CipherOptions": {
+      "name": "AES-GCM",
+      "length": 256,
+      "iv": "7SOBsQzRX6Gg4I+j"
+    },
+    "WrappedSessionKey": {
+      "WrapOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "DaLl4PPFp67Ys3dI"
+      },
+      "KeyOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "41UijgUUlw3IRM/A"
+      },
+      "WrappedKey": "gGwXcSkI2gsh2y2Iy+gAC39BXFj8ZhuPfpyjmqbV4iR+xzdx6ROlK2wioYc+54NnPo8xHWBEGWYqn2DM1CSyetStesPYJ3sVBsXY8/Q7d4s0nGIIf6Ja9u274tlbI+kEZtJGnkHanMj0GA+p7Ue4Xvgo2lMbozSfebMWLmdn2Fo+uj6LmIO9J7CEYTZQLt5Q7F6EvwIAx8DervDdaecyzw=="
+    },
+    "CipherText": "i9sKWDvyhxZeDG5AyZbOy3HgmggIvPoB10/uRrYRxHZyY3tqB+GBDKOf1OTUw/fHkqWoirmm8pZw96pWxf01YpiDMiQ+xm3/UCdUWWZaO8muly0u2LH9cU5DVyiRYscbr0zRxsqdJ1vO/gfHtjTE1NCBdmT/nmglFNHXkTnYUH/OOfP7iS4ltbogNR6aq2atFsPjM7w3Mdd05Gc/xQ3eGi1uHqmIYAxKzTR/Q+02hr9x9Aw9p2M4FIiGvChud1Xkdp0abK+7xCFoIjlWQe2LObZLjXrI/i91HX5sVp6mtuOKG8ANOjRlqMjrtinRwH9R5mmPMeB93abwbWAXlP268CyEl7s8zUGukQwhmRyyXKW5GZRU+dvir5Z7+l7eV06hakZReL4HSNenDL82IrAoxejZRWEbVI0B4M0vrNiqn1zLUq+AJzfRHzzPgvLSeDleCogg3tg/T3u9IS5RZZSbjax5ctkFIVWdp0cFEQi7Kdvb3WWHuXw7BDmAR3fdoBXoRzMg1Ix0Pn3a68PQEKomz9FakHC3jnZliO9WKyalnIfVdHmOuiVjJ+8sF8VBXDRJiUcr9P0iomITYATnVQrnNV97eHQ0i9YvKqj8TMXiRNsnYyKPMn7kzQif1iv58L1BHKkucMh44My4g3vu9seLgMpHGSWR9mlhgBIPAjePI6T/yO4FVvjD09zDMvmdaLWfQS8WqjYzAUpj7ggxUzkAoHtpCw4X0a5IqPsqTiQKp/5csoupcBCLQymwiAmQG+sBsV6K0mSgNP8c81c6cjNX1lT4AMiKvWmQdhRxwSi6pp/5WzHukq5ulYVhIkzF93euIorxwGS5XLkIezjmtZXSIdzby9qsDcWuhg/nN8cIXMTOZrfa+xWrWxxd3xZsIuoM8iioNexrJxLcfGfH/Fd3LMMg8Ua0SRBfVBjO2Ci+aEXC+pL5OAfLIwzyZpYb3CdKeolhbShdcWZXTeMj2EdCeodmkUDM0Z891HsZW2O6vxLQ9a2Wqivre9yvTMfTuSC7Ko53R83Cgztuv3bC19B9CYtDrQ4k8XutW8tf1VEolfSfg0Qzn+t69tmhYOmiB7SqOrZzus2u/ZivG41tu6AaPQYLvw/htPH83dpVmBHeCiiKHNPT5dWwlOxOmoUiVXSowkQpqOfNUlnr0YTsw1KUZPrSf7ksCB72VfRYb2mIZUVghG5i16krzjQN/omcctsqzyNwiy9+xBnGndFvaXkpMB9MQcIYIdODNbz1Of4JLnqdcMI/p90Z1cyddi/EGkZy+gT4Cj9oV1lxwM0QFNEBq8IEAxm8ppLzMnSaAQM04wBzqqAsIESWnrDcgbTGisiDlc6YxC/Y0Bfv2ycNWhd/Bv0j2skOAAsKWbFQYDMkpziw2jiZf7Cq77iDTD2nl3LDI7lN9n+vgl1SQF1DIKX9/VvR53S2BoLr79EYTMBIvZ7xwPRlFXBFfcNtj0cZ/y46SfOdVW2hsliMN4gFalL7pKyP4JQNeP8IVLtoBXYeriU6UorznZiroBQsibOJFvpBk7e4NH3Z3qkfMGXDWyONR+uLjrKISoxKDxwenNiBQdfizAziEyfwwjcnR7H9FitOeoKdmNLdUdOFuDVBdSlAEOLcCqEUEKjJVEhqb7i5unFcUBuebDzurdJOJt1DzEy4NoIzVB1wEVFP2EvAImEaMt4opFPn1yDZngBn9U0DNqneBJFupgkTJx6PMHJFH2YKAor12uzn35vIVd4vsztFSrPjls20omTQo+tyMpoiThSLc55r3CAEwvGgBgCbNhNm49NirSM7XePjOmU2g8D+Prko8C5PMgI="
+  }
+}

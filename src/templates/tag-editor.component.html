@@ -1,0 +1,50 @@
+
+<div class="full-width-fields">
+<mat-form-field >
+    <mat-chip-list #tagList aria-label="Tag selection">
+       <mat-chip *ngFor="let tag of tagValueList" [selectable]="selectable"
+               [removable]="removable(tag)" (removed)="remove(tag)">
+        {{tag.human}}
+        <mat-icon matChipRemove *ngIf="removable(tag)">cancel</mat-icon>
+      </mat-chip>
+      <input placeholder="New tag (press enter to add!)"
+             [matChipInputFor]="tagList"
+             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+             [matChipInputAddOnBlur]="addOnBlur"
+             (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+</mat-form-field>
+</div>
+
+<div [hidden]="showTableView || !showTableSwitcher"><a href (click)="toggle()">Show the table view</a></div>
+
+<div [hidden]="!showTableView" class="margin-top">
+
+    <div class="mat-elevation-z8">
+
+        <mat-form-field class="mat-filter">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          </mat-form-field>
+      <table width="100%"  mat-table [dataSource]="datasource" matSort class="short-last-column">
+
+          <ng-container matColumnDef="key">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Key </th>
+              <td mat-cell *matCellDef="let element"> {{element.key}} </td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Value </th>
+                <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+              </ng-container>
+          
+                <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef > </th>
+                        <td mat-cell *matCellDef="let element"><button [hidden]="!removable(element)" class="btn btn-light" (click)="remove(element)"><i class="fas fa-trash-alt"></i></button></td>
+                </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
+
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<h1>Welcome to the P1x1 image catalog system!</h1>
+<div>Some introduction text</div>
+
+<h3 class="margin-top">Tag cloud</h3>
+<div class="tagCloud">
+    <angular-tag-cloud [width]="1" [realignOnResize]="true" [overflow]="false" [data]="tagStatistics" (clicked)="tagClicked($event)"></angular-tag-cloud>
+</div>
+
+
+<h3>Mounted catalogs</h3>
+
+<div class="mat-elevation-z8" [hidden]="!anyCatalogsAdded">
+
+    <mat-form-field class="mat-filter">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+  <table width="100%"  mat-table [dataSource]="datasource" matSort>
+
+      <ng-container matColumnDef="catalogId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Catalog ID </th>
+          <td mat-cell *matCellDef="let element"><a href [routerLink]="['/catalog/display', element.catalogId]">{{element.catalogId}}</a></td>
+          <td mat-footer-cell *matFooterCellDef><a href [routerLink]="['/catalog/display', catalogRoot.catalogId]">{{ catalogRoot.catalogId }}</a></td>
+        </ng-container>
+
+        <ng-container matColumnDef="AllTags">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tags </th>
+            <td mat-cell *matCellDef="let element"> {{element.AllTags}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{ sumAllTags }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="AllFiles">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Files </th>
+            <td mat-cell *matCellDef="let element"> {{element.AllFiles}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{ sumAllFiles }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="SumFileSizeHuman">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+            <td mat-cell *matCellDef="let element"> {{element.SumFileSizeHuman}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{ sumSumFileSizeHuman }}</td>
+          </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>  </th>
+      <td mat-cell *matCellDef="let element"> 
+          <div [catalogActionsDropdown]="element"></div>
+        </td>
+      <td mat-footer-cell *matFooterCellDef>
+          <div [catalogActionsDropdown]="catalogRoot"></div>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="columns"></tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>
+
+</div>
+<div [hidden]="anyCatalogsAdded">
+  <div class="alert alert-info" role="alert">
+    It seems there are no catalogs added yet at all. You need to add at least one catalog before you can use this software.
+  </div>
+</div>
+
+<div class="text-center margin-top">
+        <button class="btn btn-success" [routerLink]="['/catalogs/mount']">Mount catalog</button>
+</div>

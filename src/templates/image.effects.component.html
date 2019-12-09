@@ -1,0 +1,113 @@
+<h1>Image effects</h1>
+
+    
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <h3>{{catFileName}}</h3>
+
+            <div style="position: relative; min-height: 2000px;">
+                <div *ngIf="imageTransformationInProgress" style="position:absolute;z-index:1000;top: 5px;padding:5px;width: 100%">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%; height: 20px;">
+                        {{imageTransformationCurrentPhase}}
+                    </div>
+                </div>
+
+                <div id="image-editor-container"></div>
+            </div>
+     
+        </div><!-- col-sm -->
+        <div id="info-panel" class="col-sm-3" >
+            <h3>Effects</h3>            
+            <div *ngIf="showPresets">
+                <div><a href (clickNoPropagate)="showPresets=!showPresets">Show the tuning interface instead</a></div>
+                <div class="buttons margin-top">
+                    <span *ngFor="let name of supportedEffectNames">
+                        <button class="btn" [ngClass]="{' btn-light': currentPreset!=supportedEffects[name], 'btn-primary': currentPreset==supportedEffects[name]}" (click)="setPreset(name)" >{{name}}</button>
+                        &nbsp;
+                    </span>
+                </div>
+            </div>
+            <div *ngIf="!showPresets">
+                <div><a href (clickNoPropagate)="showPresets=!showPresets">Show the presets instead</a></div>
+                <div class="margin-top">
+                    <table class="full-width full-width-fields">
+                    <tr>
+                        <td>Brightness:</td>
+                        <td><mat-slider  thumbLabel min="-100" max="100" [(ngModel)]="imageEffects.brightness" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Contrast:</td>
+                        <td><mat-slider  thumbLabel min="-100" max="100" [(ngModel)]="imageEffects.contrast" (change)="applyFilters()"></mat-slider></td>
+                    </tr>                       
+                    <tr>
+                        <td>Sepia:</td>
+                        <td><mat-slider  thumbLabel min="0" max="100" [(ngModel)]="imageEffects.sepia" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Saturation:</td>
+                        <td><mat-slider  thumbLabel min="-100" max="100" [(ngModel)]="imageEffects.saturation" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Vibrance:</td>
+                        <td><mat-slider  thumbLabel min="-100" max="100" [(ngModel)]="imageEffects.vibrance" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Hue:</td>
+                        <td><mat-slider  thumbLabel min="0" max="100" [(ngModel)]="imageEffects.hue" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Gamma:</td>
+                        <td><mat-slider  thumbLabel min="0" max="10" [(ngModel)]="imageEffects.gamma" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Gamma:</td>
+                        <td><mat-slider  thumbLabel min="0" max="100" [(ngModel)]="imageEffects.clip" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Stack blur:</td>
+                        <td><mat-slider  thumbLabel min="0" max="20" [(ngModel)]="imageEffects.stackBlur" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Exposure:</td>
+                        <td><mat-slider  thumbLabel min="-100" max="100" [(ngModel)]="imageEffects.exposure" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Noise:</td>
+                        <td><mat-slider  thumbLabel min="0" max="100" [(ngModel)]="imageEffects.noise" (change)="applyFilters()"></mat-slider></td>
+                    </tr>
+                    <tr>
+                        <td>Sharpen:</td>
+                        <td><mat-slider  thumbLabel min="0" max="100" [(ngModel)]="imageEffects.sharpen" (change)="applyFilters()"></mat-slider></td>
+                    </tr>                                    
+                    </table>
+
+                    <div class="text-center buttons">
+                        <button class="btn btn-light" (click)="resetFilters()">Reset</button>
+                    </div>
+                    
+                </div>
+            </div>
+            <h3>Actions</h3>            
+            <div>
+                    <form [formGroup]="sx.form" (ngSubmit)="sx.onSubmit()" class="full-width-fields">
+                
+                            <mat-form-field >
+                                    <input matInput placeholder="New filename" formControlName="newFilename">
+                                    <mat-error [showFirstError]="sx.form.get('newFilename')"></mat-error>
+                            </mat-form-field> 
+
+                            <div class="margin-top">
+                                    <mat-checkbox formControlName="inheritTags"> Inherit tags of the original image</mat-checkbox>
+                            </div>                  
+                
+                            <hr>
+                            <button class="btn btn-primary btn-user btn-block" type="submit">
+                              Save
+                            </button>
+                          </form>
+            </div>
+
+        </div>
+    </div><!-- row -->
+</div><!-- container -->

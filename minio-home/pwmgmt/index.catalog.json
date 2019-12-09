@@ -1,0 +1,69 @@
+{
+  "passwordBlock": {
+    "PasswordTest": {
+      "CipherOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "9Zasfq93ytxARF3A"
+      },
+      "WrappedSessionKey": {
+        "WrapOptions": {
+          "name": "AES-GCM",
+          "length": 256,
+          "iv": "VJv26KCumKkPV9UG"
+        },
+        "KeyOptions": {
+          "name": "AES-GCM",
+          "length": 256,
+          "iv": "6speeMryko6fm58T"
+        },
+        "WrappedKey": "Ex8PgjpdYjSWHpAcEbHUqWn3vJFX+p7W6sABbqgJzKLhcwisKUtecU4bIzyaQ4m74P7gB4RJGhFogbcXlqvu9cFkDXBwIVVcGM//BA6iV2yhTWcpUe11rAt9J6onrH2hDj+rjF5fxpbl9GTPUQDOEn3xr7aFgNTNxvbHCN9aixUDsKxEfAyjDmFhnkiTMBkPVWaYeoxy0WJavKoh9eA7Kw=="
+      },
+      "CipherText": "0xw8kRYSglFixwKX7rM/TodMLfn28i8xW8odUpF4YXo="
+    },
+    "WrappedMasterKeys": [
+      {
+        "DeriveAlgo": "SHA-256",
+        "DeriveOptions": {
+          "name": "AES-GCM",
+          "length": 256
+        },
+        "WrappedKey": {
+          "WrapOptions": {
+            "name": "AES-GCM",
+            "length": 256,
+            "iv": "fWNiwTub/AdcNB3v"
+          },
+          "KeyOptions": {
+            "name": "AES-GCM",
+            "length": 256,
+            "iv": "uzwU+kcMt6asucdR"
+          },
+          "WrappedKey": "xbaYthdj314T4BozmdwlEUhCzSYg892vbzhySdx9AFHjOWOrsT2zXb0TvK9w7cLNDB/TzV+CfZSyZyrrlCaJgtXRL7vqXwALep51KIUuhUOQvUnQepcJZBVV8eLgwBt2vdWB+nWF2VEVfwBEttFJcesN8M4BEyZKOC17LOiRKhVuvyQOHndxO6FIVmXZiLuNG/cQISVMzKIfs8rEA7aBcQ=="
+        },
+        "Comment": "comment2"
+      }
+    ]
+  },
+  "files": {
+    "CipherOptions": {
+      "name": "AES-GCM",
+      "length": 256,
+      "iv": "DkCHzk/s5HVtHYWw"
+    },
+    "WrappedSessionKey": {
+      "WrapOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "x+lxLMNufxm3Hk8m"
+      },
+      "KeyOptions": {
+        "name": "AES-GCM",
+        "length": 256,
+        "iv": "OJji45kRguGoJEnQ"
+      },
+      "WrappedKey": "pWvO7adOCECwrFUZJnvn4xpfvIiK7+eVXClMxTO5QWapMhHl/VsXqxofjvZnKH+6H9lLrENLf1kr8KklCQ2O5bCpacEeluLV3b0hIBH3Nrdrt02ERUUkwvyTuIvvuw1riVZvIkSvgCxgYvuHBbVwlNImC+jZgAU/LYKy454kTRoP+AxrETfKhc8N9jYymbQ8hb00lLVN4AiXOVFTp0Pzng=="
+    },
+    "CipherText": "MhSiMkNgtBl5qFZVo/xEgOYf"
+  }
+}

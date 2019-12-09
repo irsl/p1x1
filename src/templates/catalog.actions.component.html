@@ -1,0 +1,13 @@
+<div class="dropdown">
+        <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+          Actions
+        </button>
+        <div class="dropdown-menu">
+            <a *ngIf="element['capWriteable']" class="dropdown-item" href  [routerLink]="['/catalog/upload', element.catalogId]">Upload</a>
+            <a *ngIf="element['capCreateClearSubCatalog']" class="dropdown-item" href  [routerLink]="['/subcatalog/new', element.catalogId, 'CreateClearSubCatalog']">Create clear subcatalog</a>
+            <a *ngIf="element['capCreatePasswordProtectedSubCatalog']" class="dropdown-item" href  [routerLink]="['/subcatalog/new', element.catalogId, 'CreatePasswordProtectedSubCatalog']">Create password protected subcatalog</a>
+            <a *ngIf="element['capCreateKeyDerivedSubCatalog']" class="dropdown-item" href  [routerLink]="['/subcatalog/new', element.catalogId, 'CreateKeyDerivedSubCatalog']">Create key derived subcatalog</a>
+            <a *ngIf="element['capMountCatalog']" class="dropdown-item" href  [routerLink]="['/catalogs/mount', element.catalogId, 'MountCatalog']">Mount catalog</a>            
+            <a *ngIf="element['capManagePasswords']" class="dropdown-item" href  [routerLink]="['/catalog/passwords', element.catalogId]">Manage passwords</a>            
+          </div>
+</div>  
