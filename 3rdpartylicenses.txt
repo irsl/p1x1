@@ -585,9 +585,6 @@ Apache-2.0
  
 
 
-@angular/common
-MIT
-
 util
 MIT
 Copyright Joyent, Inc. and other Node contributors. All rights reserved.
@@ -863,6 +860,9 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 @angular/platform-browser
+MIT
+
+@angular/common
 MIT
 
 zxcvbn
