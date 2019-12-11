@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 
 interface Scripts {
   name: string;
@@ -6,7 +7,7 @@ interface Scripts {
 }
 
 export const ScriptStore: Scripts[] = [
-  { name: 'sb-admin-2', src: '../../../assets/js/sb-admin-2.min.js' }
+  { name: 'sb-admin-2', src: 'assets/js/sb-admin-2.min.js' }
 ];
 
 declare var document: any;
@@ -39,7 +40,7 @@ export class DynamicScriptLoaderService {
         //load script
         let script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = this.scripts[name].src;
+        script.src = environment.baseUrl + "/"+ this.scripts[name].src;
         if (script.readyState) {  //IE
             script.onreadystatechange = () => {
                 if (script.readyState === "loaded" || script.readyState === "complete") {
