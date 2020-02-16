@@ -27,7 +27,7 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
   globalTags: StringKeyValuePairs = {};
 
   extractExifTags: boolean = true;
-  executeTensorFlow: boolean = true;
+  executeTensorFlow: boolean = false;
   private tensorFlowMinProbability: number = TENSORFLOW_MIN_PROBABILITY;
 
   private allFiles = 0;
