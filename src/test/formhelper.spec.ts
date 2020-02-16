@@ -4,6 +4,7 @@ import { Validators, FormBuilder } from "@angular/forms";
 import { TestBed } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { Validate } from "src/app/formbuilder.common";
+import { Helper } from "src/app/helper";
 
 
 describe('formbuilder tests', ()=>{
@@ -120,7 +121,8 @@ describe('formbuilder tests', ()=>{
         re.form.get("sub").get("subboolean").setValue("true");
         re.onSubmit();
         expect(callbackSuccess).toEqual(1, "subfield is required and is now set");
-        expect(lastCallbackWith.sub).toEqual({subfield: "newvalue", subboolean: true}, "note: even the boolean was casted from string!");
+        var expected = Helper.createRaw(SubClass, {subfield: "newvalue", subboolean: true});
+        expect(lastCallbackWith.sub).toEqual(expected, "note: even the boolean was casted from string!");
 
     });
 
@@ -148,10 +150,11 @@ describe('formbuilder tests', ()=>{
         re.form.get("sub").get("subfield").setValue("newvalue");
         re.onSubmit();
         expect(callbackSuccess).toEqual(1, "subfield is required and is now set");
-        expect(lastCallbackWith.sub).toEqual({subfield: "newvalue"}, "stuff was set");
+        var expected = Helper.createRaw(SubClass, {subfield: "newvalue"});
+        expect(lastCallbackWith.sub).toEqual(expected, "stuff was set");
 
         var m = lastCallbackWith.sub.someMethod();
-        expect(m).toBe("subfield X subfield", "the returned instance must be type safe");
+        expect(m).toBe("newvalue X newvalue", "the returned instance must be type safe");
 
     });
 
