@@ -77,29 +77,47 @@ export class ImageService {
 
         return new Promise<ArrayBuffer>((resolve)=>{
             Caman("#"+canvasName, function () {
-                var camanObject = this;
+                var camanObject;
+                camanObject = this;
 
                 if(callback) {
                     callback(camanObject);
                 }
 
                 camanObject.render(function () {
-                    var canvas = document.getElementById(canvasName) as HTMLCanvasElement;
-                    canvas.toBlob(async (blob) => {
-                        if(!containerId)
-                        {
-                            var el = document.getElementById(holderName);
-                            el.parentNode.removeChild(el);    
-                        }else{
-                            var el = document.getElementById(containerId);
-                            el.innerHTML = "";
-                        }
-                        var ab = await new Response(blob).arrayBuffer();
-                        resolve(ab as ArrayBuffer);
-                    });
+                    camanObject.pixelData = null;
+                    camanObject.initializedPixelData = null;
+                    camanObject.originalPixelData = null;
+                    camanObject.imageData = null;
+                    camanObject.renderer.modPixelData = null;
+                    camanObject = null;
 
+                    resolve(null);
                 });
             });
+        })
+        .then(()=>{
+            return new Promise<ArrayBuffer>(resolve=>{
+                var canvas = document.getElementById(canvasName) as HTMLCanvasElement;
+                canvas.toBlob(async (blob) => {// 
+                    // this needs to be tiered down manually as the library does not offer any options to destruct the object properly
+              
+                    if(!containerId)
+                    {
+                        var el = document.getElementById(holderName);
+                        el.parentNode.removeChild(el);    
+                    }else{
+                        var el = document.getElementById(containerId);
+                        el.innerHTML = "";
+                    }
+    
+                    canvas = null;
+    
+                    var ab = await new Response(blob).arrayBuffer();
+                    resolve(ab as ArrayBuffer);
+                });
+    
+            })    
         })
     }
 
