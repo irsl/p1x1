@@ -204,7 +204,7 @@ export class ProtectedShareFormComponent  {
     </button>
   </div>
   <div class="modal-body">
-     <tag-editor [tags]="tags" [protectedTags]="protectedTags"></tag-editor>
+     <tag-editor [tags]="tags" [protectedTags]="protectedTags" [allTagKeys]="allTagKeys"></tag-editor>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-success" (click)="modal.close(true)">OK</button>
@@ -216,6 +216,7 @@ export class EmbeddedTagEditorComponent  {
     modal: NgbModalRef;
     tags: StringKeyValuePairs;
     protectedTags: TagKeyValuePairs;
+    allTagKeys: string[];
 }
 
 @Component({
@@ -646,7 +647,7 @@ export class ModalService {
         }
     }
 
-    async showTagEditor(tags: StringKeyValuePairs, protectedTags?: TagKeyValuePairs) : Promise<StringKeyValuePairs>
+    async showTagEditor(tags: StringKeyValuePairs, allTagKeys: string[], protectedTags?: TagKeyValuePairs) : Promise<StringKeyValuePairs>
     {
         var tagsClone : StringKeyValuePairs = {...tags};
         var mainService = this;
@@ -654,6 +655,7 @@ export class ModalService {
 
         var modalRef = modalService.open(EmbeddedTagEditorComponent, defaultOpenParameters);
         var comp = (modalRef.componentInstance as EmbeddedTagEditorComponent)
+        comp.allTagKeys = allTagKeys;
         comp.tags = tagsClone;
         comp.protectedTags = protectedTags;
         comp.modal = modalRef;

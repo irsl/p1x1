@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { WorldService, ICatalogRoute, RootCatalogName } from './world.service';
 import { Filter, IFilter } from './filter';
-import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, StandardCatalog, StandardCatalogProtected, StandardCatalogClear } from './catalog.service';
+import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, StandardCatalog, StandardCatalogProtected, StandardCatalogClear, CombinedCatalog } from './catalog.service';
 import { EventSeverity, TagNameContentType, StringKeyValuePairs } from './catalog.common';
 import { Helper, TagKeyValue } from './helper';
 import { MatTableDataSource } from '@angular/material/table';
@@ -168,12 +168,28 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
       eventCallbackManager.callback(EventSeverity.Error, "Error while building the zip archive: "+e.toString());
     }
   }
+  private getUniqueCatalogs(files: CatalogAndCatalogFileInfo[]): ICatalog
+  {
+     var set = new Set<ICatalog>();
+     var re = new CombinedCatalog();
+     for(let q of files)
+     {
+       set.add(q.original.catalog);
+     }
+     for(let q of Array.from(set)){
+        re.AddSubCatalog(q);
+     }
+     return re;
+  }
   async editTagsOfFiles(files: CatalogAndCatalogFileInfo[]){
     var allOriginalTags = this.getTagsOfFiles(files);
     var classifiedOriginalTags = Helper.classifyTags(allOriginalTags);
     var originalTags = classifiedOriginalTags.unprotectedTags;
 
-    var editedTags = await this.modal.showTagEditor(originalTags, classifiedOriginalTags.protectedTags);
+    var uniqCatalogs : ICatalog = this.getUniqueCatalogs(files);    
+    var allUniqTags = Array.from(uniqCatalogs.getTagKeysRecursively());
+    console.log("tags for autocomplete", allUniqTags);
+    var editedTags = await this.modal.showTagEditor(originalTags, allUniqTags, classifiedOriginalTags.protectedTags);
     if(editedTags == null) return;
     for(let file of files){
       var aTags = file.original.file.getTags();

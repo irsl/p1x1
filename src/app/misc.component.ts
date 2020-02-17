@@ -11,6 +11,8 @@ import { ModalService } from "./modal.service";
 import { ICatalog, StandardCatalogProtected } from "./catalog.service";
 import { WorldService, RootCatalogName } from "./world.service";
 import { ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs";
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 @Component({
     selector: "tag-editor",
@@ -35,6 +37,17 @@ export class TagEditorComponent implements OnInit, AfterViewInit {
     selectable = true;
     addOnBlur = true;
     showTableView = false;
+
+    @Input("allTagKeys")
+    allTagKeys: string[] = [];
+    
+    search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 1 ? []
+        : this.allTagKeys.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    )
     
     datasource : MatTableDataSource<TagKeyValue>;
     columns = ["key", "value", "actions"];

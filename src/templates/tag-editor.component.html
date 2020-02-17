@@ -9,12 +9,15 @@
             <mat-icon matChipRemove *ngIf="removable(tag)">cancel</mat-icon>
           </mat-chip>
           <input id="chipInput" placeholder="New tag (press enter to add!)"
+                #instance="ngbTypeahead"
+                [ngbTypeahead]="search"
                 [matChipInputFor]="tagList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="addOnBlur"
                 (matChipInputTokenEnd)="add($event)">
         </mat-chip-list>
     </mat-form-field>
+
   </div>
 </div>
 

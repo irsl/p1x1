@@ -20,6 +20,7 @@ import { MatChipsModule }from '@angular/material/chips';
 import { MatIconModule }from '@angular/material/icon';
 import { MatCheckboxModule }from '@angular/material/checkbox';
 import { MatSliderModule } from '@angular/material/slider'; 
+import { MatAutocompleteModule } from '@angular/material/autocomplete'; 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { PasswordStrengthMeterModule } from 'angular-password-strength-meter';
@@ -70,6 +71,7 @@ import { PresignedCatalogOpenComponent } from './catalog.presigned.open.componen
     MatCheckboxModule,
     MatProgressBarModule,
     MatSliderModule,
+    MatAutocompleteModule,
     MatChipsModule,
     MatIconModule,
     FormsModule,
