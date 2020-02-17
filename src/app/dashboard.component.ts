@@ -88,7 +88,12 @@ export class DashboardComponent implements OnInit  {
      this.datasource.sort = this.sort;    
      this.datasource.paginator = this.paginator;
 
-     this.tagStatistics = Helper.transformTagStatisticsToCloudData(this.world.combinedCatalog.getTagStatisticsRecursively({hideProtectedTags: true}));
+     this.tagStatistics = Helper.transformTagStatisticsToCloudData(this.world.combinedCatalog.getTagStatisticsRecursively(
+       {
+         hideProtectedTags: true,
+         excludeTagPrefixes: ["exif."],
+       }
+     ));
 
   }
   tagClicked(stuff: CloudData) {

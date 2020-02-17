@@ -325,6 +325,7 @@ export interface ICatalog extends IEntityWithName {
 }
 interface StatisticsFilter {
     tagPrefix?: string;
+    excludeTagPrefixes?: string[];
     aggregateValues?: boolean;
     hideProtectedTags?: boolean;
 }
@@ -403,6 +404,22 @@ abstract class CatalogBase implements ICatalog {
             for(let tagKey of Object.keys(tags)){
                 if((filter.hideProtectedTags)&&(Helper.isRestrictedTagNamespace(tagKey)))
                    continue;
+
+                if(filter.excludeTagPrefixes)
+                {
+                    var drop = false;
+                    for(var prefix of filter.excludeTagPrefixes) {
+                        if(tagKey.startsWith(prefix))
+                        {
+                            drop = true;
+                            break;
+                        }
+                    }
+                    if(drop)
+                    {
+                        continue;
+                    }
+                }
 
                 var tagValue = tags[tagKey];
                 var finalKey = !filter.aggregateValues ? tagKey+(tagValue?"="+tagValue:"") : tagKey;
