@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, Directive, AfterContentInit, ElementRef, EventEmitter, Output, HostListener } from "@angular/core";
+import { Component, Input, OnInit, ViewChild, Directive, AfterContentInit, ElementRef, EventEmitter, Output, HostListener, AfterViewInit } from "@angular/core";
 import { StringKeyValuePairs, TagKeyValuePairs } from "./catalog.common";
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -16,7 +16,7 @@ import { ActivatedRoute } from "@angular/router";
     selector: "tag-editor",
     templateUrl: '../templates/tag-editor.component.html',
 })
-export class TagEditorComponent implements OnInit {
+export class TagEditorComponent implements OnInit, AfterViewInit {
     @Input("tags")
     tags: StringKeyValuePairs;    
 
@@ -92,6 +92,14 @@ export class TagEditorComponent implements OnInit {
         this.tagsToStrList();
     }
 
+    ngAfterViewInit(): void {
+        setTimeout(()=>{
+            var objDiv = document.getElementById("tagEditorChipList");
+            objDiv.scrollTop = objDiv.scrollHeight;
+            document.getElementById("chipInput").focus();
+    
+        }, 1000)
+    }
 }
 
 

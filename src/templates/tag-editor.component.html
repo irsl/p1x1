@@ -1,19 +1,21 @@
 
 <div class="full-width-fields">
-<mat-form-field >
-    <mat-chip-list #tagList aria-label="Tag selection">
-       <mat-chip *ngFor="let tag of tagValueList" [selectable]="selectable"
-               [removable]="removable(tag)" (removed)="remove(tag)">
-        {{tag.human}}
-        <mat-icon matChipRemove *ngIf="removable(tag)">cancel</mat-icon>
-      </mat-chip>
-      <input placeholder="New tag (press enter to add!)"
-             [matChipInputFor]="tagList"
-             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-             [matChipInputAddOnBlur]="addOnBlur"
-             (matChipInputTokenEnd)="add($event)">
-    </mat-chip-list>
-</mat-form-field>
+  <div  style="max-height: 300px; overflow-x: hidden; overflow-y: auto" id="tagEditorChipList">
+    <mat-form-field>
+        <mat-chip-list #tagList aria-label="Tag selection">
+          <mat-chip *ngFor="let tag of tagValueList" [selectable]="selectable"
+                  [removable]="removable(tag)" (removed)="remove(tag)">
+            {{tag.human}}
+            <mat-icon matChipRemove *ngIf="removable(tag)">cancel</mat-icon>
+          </mat-chip>
+          <input id="chipInput" placeholder="New tag (press enter to add!)"
+                [matChipInputFor]="tagList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+    </mat-form-field>
+  </div>
 </div>
 
 <div [hidden]="showTableView || !showTableSwitcher"><a href (click)="toggle()">Show the table view</a></div>
