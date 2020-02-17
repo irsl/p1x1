@@ -180,6 +180,7 @@ export class WorldService implements OnInit {
         if(this.connections.s3Connections.length <= 0) return;
 
         var eventCallbackManager = this.modalService.openEventCallbackForm("Mounting saved catalogs", true);
+        eventCallbackManager.dontCloseAutomatically = true;
 
         for(let s3conn of this.connections.s3Connections)
         {

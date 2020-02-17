@@ -387,6 +387,7 @@ const defaultOpenParameters = {
 export interface IEventCallbackManager {
     callback: EventCallback;
     errors: boolean;
+    dontCloseAutomatically: boolean;
     dismissUnlessWarnings();
     dismiss();
     autoCloseUnlessWarnings();
@@ -446,8 +447,10 @@ export class ModalService {
                 counter--;
                 if(counter <= 0)
                 {
-                    if(!rep.errors)
-                      autoClose();
+                    if((!rep.errors)&&(!rep.dontCloseAutomatically))
+                    {
+                        autoClose();
+                    }
                 }
             }
             else
@@ -464,6 +467,7 @@ export class ModalService {
 
         rep = {
             callback: callback,
+            dontCloseAutomatically: false,
             errors: false,
             dismiss: doClose,
             dismissUnlessWarnings: function(){
@@ -503,6 +507,7 @@ export class ModalService {
         function autoClose()
         {
             console.log("autoClose");
+
             if(!opened)
             {
                 cancelOpen();
