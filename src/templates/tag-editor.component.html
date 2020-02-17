@@ -10,13 +10,14 @@
           </mat-chip>
           <input id="chipInput" placeholder="New tag (press enter to add!)"
                 #instance="ngbTypeahead"
-                [ngbTypeahead]="search"
+                [ngbTypeahead]="search" placement="top-left"
                 [matChipInputFor]="tagList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="addOnBlur"
                 (matChipInputTokenEnd)="add($event)">
+        
         </mat-chip-list>
-    </mat-form-field>
+      </mat-form-field>
 
   </div>
 </div>
