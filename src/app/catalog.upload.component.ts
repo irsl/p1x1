@@ -12,6 +12,7 @@ import { BoxService, BoxOperations } from './box.service';
 import { Router } from '@angular/router';
 import { VideoService } from './video.service';
 import { FileToUpload, UploadService } from './upload.service';
+import { HelperService, WindowUrl } from './helper.service';
 
 export const TENSORFLOW_MIN_PROBABILITY = 0.5;
 
@@ -50,6 +51,7 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
     private metaService: ImageMetaInfoService,
     private boxService: BoxService,
     private uploadService: UploadService,
+    private helperService: HelperService,
   ) 
   {
   }
@@ -141,12 +143,31 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
   }
 
   async openTagEditor(element: FileToUpload)
-  {
-      var tags = await this.modalService.showTagEditor(element.tags, element.dimensionTags);
-      if(tags == null) return;
-      element.tags = tags;
-      this.uploadService.refreshTagsCount(element);
-      this.rerender();
+  {    
+      var allTagKeys = this.destinationCatalog ? Array.from(this.destinationCatalog.getTagKeysRecursively()) : [];
+      var imageUrl = null;
+      if(Helper.isImage(element.fileType))
+      {
+        var ab = await Helper.fileToArrayBuffer(element.file);
+        var w = this.helperService.arrayBufferToSanitizedWindowUrl(ab, element.fileType);
+
+        imageUrl = w.safeUrl;
+      }
+      
+
+      try {
+        var tags = await this.modalService.showTagEditor(element.tags, allTagKeys, imageUrl, element.dimensionTags);
+        if(tags == null) return;
+        element.tags = tags;
+        this.uploadService.refreshTagsCount(element);
+        this.rerender();
+  
+      }finally {        
+        if(imageUrl)
+        {
+          window.URL.revokeObjectURL(imageUrl);
+        }
+      }
   }
 
   ngOnDestroy() {

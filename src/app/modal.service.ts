@@ -11,6 +11,7 @@ import { FormBuilderService, FormManager } from './formbuilder.service';
 import { Validate } from './formbuilder.common';
 import { Helper } from './helper';
 import { PixiValidators } from './pixivalidators';
+import { SafeUrl } from '@angular/platform-browser';
 
 interface Event {
     severity: EventSeverity;
@@ -204,7 +205,7 @@ export class ProtectedShareFormComponent  {
     </button>
   </div>
   <div class="modal-body">
-     <tag-editor [tags]="tags" [protectedTags]="protectedTags" [allTagKeys]="allTagKeys"></tag-editor>
+     <tag-editor [tags]="tags" [protectedTags]="protectedTags" [allTagKeys]="allTagKeys" [imageUrl]="imageUrl"></tag-editor>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-success" (click)="modal.close(true)">OK</button>
@@ -217,6 +218,7 @@ export class EmbeddedTagEditorComponent  {
     tags: StringKeyValuePairs;
     protectedTags: TagKeyValuePairs;
     allTagKeys: string[];
+    imageUrl: SafeUrl|string;
 }
 
 @Component({
@@ -647,14 +649,17 @@ export class ModalService {
         }
     }
 
-    async showTagEditor(tags: StringKeyValuePairs, allTagKeys: string[], protectedTags?: TagKeyValuePairs) : Promise<StringKeyValuePairs>
+    async showTagEditor(tags: StringKeyValuePairs, allTagKeys: string[], imageUrl: SafeUrl|string, protectedTags?: TagKeyValuePairs) : Promise<StringKeyValuePairs>
     {
         var tagsClone : StringKeyValuePairs = {...tags};
         var mainService = this;
         var modalService = this.modalService;
 
-        var modalRef = modalService.open(EmbeddedTagEditorComponent, defaultOpenParameters);
+        var params = {...defaultOpenParameters};
+        if(imageUrl) params["size"] = "xl";
+        var modalRef = modalService.open(EmbeddedTagEditorComponent, params);
         var comp = (modalRef.componentInstance as EmbeddedTagEditorComponent)
+        comp.imageUrl = imageUrl;
         comp.allTagKeys = allTagKeys;
         comp.tags = tagsClone;
         comp.protectedTags = protectedTags;

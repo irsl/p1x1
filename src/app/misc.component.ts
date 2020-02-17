@@ -13,6 +13,7 @@ import { WorldService, RootCatalogName } from "./world.service";
 import { ActivatedRoute } from "@angular/router";
 import { Observable } from "rxjs";
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import { SafeUrl, DomSanitizer } from "@angular/platform-browser";
 
 @Component({
     selector: "tag-editor",
@@ -28,6 +29,9 @@ export class TagEditorComponent implements OnInit, AfterViewInit {
     @Input("showTableSwitcher")
     showTableSwitcher: boolean = true;    
 
+    @Input("imageUrl")
+    imageUrl: SafeUrl|string;
+
     tagValueList: TagKeyValue[] = [];
 
     @ViewChild(MatSort, {static: true}) sort : MatSort;
@@ -40,7 +44,7 @@ export class TagEditorComponent implements OnInit, AfterViewInit {
 
     @Input("allTagKeys")
     allTagKeys: string[] = [];
-    
+
     search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
@@ -53,7 +57,7 @@ export class TagEditorComponent implements OnInit, AfterViewInit {
     columns = ["key", "value", "actions"];
     readonly separatorKeysCodes: number[] = [ENTER, COMMA];
   
-    constructor(){
+    constructor(private sanitizer: DomSanitizer){
     }
   
     toggle(){
@@ -109,6 +113,7 @@ export class TagEditorComponent implements OnInit, AfterViewInit {
         setTimeout(()=>{
             var objDiv = document.getElementById("tagEditorChipList");
             objDiv.scrollTop = objDiv.scrollHeight;
+            console.log("tageditor chip list!", objDiv.scrollTop)
             document.getElementById("chipInput").focus();
     
         }, 1000)

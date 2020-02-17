@@ -188,8 +188,17 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
 
     var uniqCatalogs : ICatalog = this.getUniqueCatalogs(files);    
     var allUniqTags = Array.from(uniqCatalogs.getTagKeysRecursively());
-    console.log("tags for autocomplete", allUniqTags);
-    var editedTags = await this.modal.showTagEditor(originalTags, allUniqTags, classifiedOriginalTags.protectedTags);
+    // console.log("tags for autocomplete", allUniqTags);
+    var imageUrl = null;
+    if((files.length == 1)&&(files[0].original.file.isImage()))
+    {
+      var tb = await files[0].original.catalog.downloadFileVersion(files[0].original.file, ThumbnailKeyMedium);
+      if(tb) 
+      {
+        imageUrl = await Helper.arrayBufferToDataUrl(tb, files[0].original.file.getContentType())
+      }
+    }
+    var editedTags = await this.modal.showTagEditor(originalTags, allUniqTags, imageUrl, classifiedOriginalTags.protectedTags);
     if(editedTags == null) return;
     for(let file of files){
       var aTags = file.original.file.getTags();

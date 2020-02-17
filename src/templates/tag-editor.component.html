@@ -1,4 +1,8 @@
-
+<div ng-show="imageUrl">  
+  <div style="float: left; margin-right: 10px;">
+     <img [attr.src]="imageUrl" style="max-width: 300px; height: auto;">
+  </div>
+</div>
 <div class="full-width-fields">
   <div  style="max-height: 300px; overflow-x: hidden; overflow-y: auto" id="tagEditorChipList">
     <mat-form-field>

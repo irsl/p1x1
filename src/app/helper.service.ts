@@ -21,13 +21,18 @@ export interface WindowUrl {
       {        
       }
 
+      public sanitizeUrl(url: string): SafeUrl
+      {
+         return this.sanitizer.bypassSecurityTrustUrl(url);
+      }
+
       public arrayBufferToSanitizedWindowUrl(arrayBuffer: ArrayBuffer, contentType: string): WindowUrl
       {        
           var url = Helper.arrayBufferToWindowUrl(arrayBuffer, contentType);
           return {
               rawUrl: url,
-              safeUrl: this.sanitizer.bypassSecurityTrustUrl(url),
-          }
+              safeUrl: this.sanitizeUrl(url),
+          };
       }
       public generateExternalUrlForComponents(components: any[], fragment?: string): string
       {
