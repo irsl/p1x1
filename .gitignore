@@ -4,5 +4,14 @@ minio-home/.minio.sys/buckets/**
 minio-home/.minio.sys/multipart/**
 minio-home/.minio.sys/tmp/**
 minio-home/bucket-via-webui/**
+minio-home/new-dupe/**
+minio-home/pwmgmt/**
+minio-home/recovery-delete-clear/**
+minio-home/recovery-delete-enc/**
+minio-home/recovery-readd-clear/**
+minio-home/recovery-readd-enc/**
+minio-home/share-clear/**
+minio-home/share-enc/**
+minio-home/typical-catalog-enc/**
 dist/**
 gh-pages/**
