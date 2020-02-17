@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ICatalog } from './catalog.service';
-import {  StringKeyValuePairs } from './catalog.common';
+import {  StringKeyValuePairs, TagKeyValuePairs } from './catalog.common';
 import { MatTableDataSource } from '@angular/material/table';
-import { Helper } from './helper';
+import { Helper, TagKeyValue } from './helper';
 import { MatSort } from '@angular/material/sort';
 import { ModalService } from './modal.service';
 import { ImageMetaInfoService } from './image.metainfo.service';
@@ -12,20 +12,35 @@ import { BoxService, BoxOperations } from './box.service';
 import { Router } from '@angular/router';
 import { VideoService } from './video.service';
 import { FileToUpload, UploadService } from './upload.service';
-import { HelperService, WindowUrl } from './helper.service';
+import { HelperService } from './helper.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { SafeUrl } from '@angular/platform-browser';
 
 export const TENSORFLOW_MIN_PROBABILITY = 0.5;
+
+const initialSelection = [];
+const allowMultiSelect = true;
 
 @Component({
   templateUrl: '../templates/catalog.upload.component.html',
 })
 export class CatalogUploadComponent implements OnInit, OnDestroy {
+  private lastClickedRow: FileToUpload;
+  private lastClickedPreview: SafeUrl;
+  private lastClickedPreviewRawUrl: string;
+  private lastClickedIsImage: boolean;
+  showRightPane: boolean = false;
+  private showRightPaneCurrent: boolean = false;
+  private tagsToShow: TagKeyValue[] = [];
+
   destinationCatalogId: string;
   destinationCatalog: ICatalog;
   filesToUpload : FileToUpload[] = [];
   datasource : MatTableDataSource<FileToUpload>;
   backgroundProcessingInProgress: boolean = false;
-  globalTags: StringKeyValuePairs = {};
+  
+  private selection: SelectionModel<FileToUpload>
+    = new SelectionModel<FileToUpload>(allowMultiSelect, initialSelection);
 
   extractExifTags: boolean = true;
   executeTensorFlow: boolean = false;
@@ -35,7 +50,7 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
   private allTags = 0;
   private fullSize = 0;
   private fullSizeHuman = "0 MiB";
-  columns = ["fileName", "tagsCount", "sizeHuman", "actions"];
+  columns = ["select", "fileName", "tagsCount", "sizeHuman", "actions"];
 
   private box: BoxOperations<FileToUpload>;
 
@@ -56,6 +71,83 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
   {
   }
 
+  /** Whether the number of selected elements matches the total number of rows. */
+isAllSelected() {
+  const numSelected = this.selection.selected.length;
+  const numRows = this.datasource.data.length;
+  return numSelected == numRows;
+}
+
+/** Selects all rows if they are not all selected; otherwise clear selection. */
+toggleSelection(row: FileToUpload){
+  this.selection.toggle(row); 
+  this.doShowRightPane(row);
+}
+masterToggleAndSelectionChanged(){
+  this.masterToggle();
+  this.doShowRightPane(null);
+}
+masterToggle() {
+  this.isAllSelected() ?
+      this.selection.clear() :
+      this.datasource.data.forEach(row => this.selection.select(row));
+}
+
+async doShowRightPane(row: FileToUpload, rowClick?: boolean)
+{
+   var previousLastClicked = this.lastClickedRow;
+   var previousShowRightPane = this.showRightPane;
+   this.lastClickedIsImage = false;
+   this.lastClickedRow = row;
+   this.showRightPane = (this.lastClickedRow != null || (this.selection.selected.length > 0));
+   this.showRightPaneCurrent = false;
+   if(this.selection.selected.length <= 0)
+      this.showRightPaneCurrent = true;
+   else if((this.selection.selected.length == 1)&&(this.selection.selected[0] == this.lastClickedRow))
+      this.showRightPaneCurrent = true;
+   
+   if((this.showRightPaneCurrent)&&(this.lastClickedRow)){
+       this.lastClickedIsImage = Helper.isImage(this.lastClickedRow.fileType);
+
+       if(previousLastClicked == this.lastClickedRow)
+       {
+         if(rowClick)
+            this.showRightPane = !previousShowRightPane;
+         return;
+       }
+       this.tagsToShow = Helper.tagsToHash(this.getAllTagsOfFile(this.lastClickedRow));
+
+       if(this.lastClickedPreview)
+       {
+          window.URL.revokeObjectURL(this.lastClickedPreviewRawUrl);
+       }
+       this.lastClickedPreview = "";
+
+       Helper.arrayBufferToDataUrl
+       var ab = await Helper.fileToArrayBuffer(row.file);
+       var w = this.helperService.arrayBufferToSanitizedWindowUrl(ab, row.fileType);
+       this.lastClickedPreviewRawUrl = w.rawUrl;
+
+       this.lastClickedPreview = w.safeUrl;
+   } else {
+      this.tagsToShow = Helper.tagsToHash( this.getTagsOfFiles(this.selection.selected) ); 
+   }
+}
+getAllTagsOfFile(file: FileToUpload): StringKeyValuePairs
+{
+  var re: StringKeyValuePairs = {...file.tags};
+  for(let q of Object.keys(file.dimensionTags))
+  {
+    re[q] = file.dimensionTags[q].toString();
+  }
+  return re;
+}
+getTagsOfFiles(files: FileToUpload[]): StringKeyValuePairs
+{
+  var allTags = files.map(x=>this.getAllTagsOfFile(x));
+  return Helper.intersectTags(allTags);
+}
+
   onDrop(files: FileList) {
     var fileList : File[] = [];
     // console.log(files, files.length);
@@ -68,9 +160,18 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
     this.filesChanged(fileList);
   }
 
+  removeSelectedFiles(){
+    this.removeFiles(this.selection.selected);
+  }
+
   removeFile(file: FileToUpload){
-      Helper.deleteArrayValue(this.filesToUpload, file);
-      this.rerender();
+      this.removeFiles([file]);
+  }
+  removeFiles(files: FileToUpload[]){
+    for(let q of files) {
+      Helper.deleteArrayValue(this.filesToUpload, q);
+    }
+    this.rerender();
   }
 
   applyFilter(filterValue: string) {
@@ -120,7 +221,7 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
      return this.filesToUpload.filter(x => !x.processed);
   }
   upload(){
-      this.uploadService.upload(this.destinationCatalog, this.filesToUpload, this.globalTags);
+      this.uploadService.upload(this.destinationCatalog, this.filesToUpload);
   }
 
   rerender(){
@@ -142,32 +243,67 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
     this.datasource.paginator = this.paginator;
   }
 
+  editTagsOfSelectedFiles()
+  {
+    this.editTagsOfFiles(this.selection.selected);
+  }
+  async editTagsOfFiles(files: FileToUpload[])
+  {
+    var allTagKeys = this.destinationCatalog ? Array.from(this.destinationCatalog.getTagKeysRecursively()) : [];
+    var imageUrl = null;
+    var w;
+    if((files.length == 1)&&(Helper.isImage(files[0].fileType)))
+    {
+      var ab = await Helper.fileToArrayBuffer(files[0].file);
+      w = this.helperService.arrayBufferToSanitizedWindowUrl(ab, files[0].fileType);
+
+      imageUrl = w.safeUrl;
+    }
+    
+    var allOriginalTags = this.getTagsOfFiles(files);
+    var classifiedOriginalTags = Helper.classifyTags(allOriginalTags);
+    var originalTags = classifiedOriginalTags.unprotectedTags;
+
+    try {
+      var editedTags = await this.modalService.showTagEditor(originalTags, allTagKeys, imageUrl, classifiedOriginalTags.protectedTags);
+      if(editedTags == null) return;
+
+      for(let file of files) {
+        var aTags = file.tags;
+  
+        // removing the tags that were originally present
+        for(let originalTagKey of Object.keys(originalTags))
+        {
+           delete aTags[originalTagKey];
+        }
+  
+        // and assigning the final ones:
+        for(let editedTagKey of Object.keys(editedTags))
+        {
+          aTags[editedTagKey] = editedTags[editedTagKey];
+        }
+        file.tagsCount = Object.keys(aTags).length;
+        file.tags = aTags;
+
+        this.uploadService.refreshTagsCount(file);
+      }
+
+      this.rerender();
+      var lc = this.lastClickedRow; this.lastClickedRow = null; this.doShowRightPane(lc);
+
+    }finally {        
+      if(imageUrl)
+      {
+        window.URL.revokeObjectURL(w.rawUrl);
+      }
+    }
+
+
+  }
+  
   async openTagEditor(element: FileToUpload)
   {    
-      var allTagKeys = this.destinationCatalog ? Array.from(this.destinationCatalog.getTagKeysRecursively()) : [];
-      var imageUrl = null;
-      if(Helper.isImage(element.fileType))
-      {
-        var ab = await Helper.fileToArrayBuffer(element.file);
-        var w = this.helperService.arrayBufferToSanitizedWindowUrl(ab, element.fileType);
-
-        imageUrl = w.safeUrl;
-      }
-      
-
-      try {
-        var tags = await this.modalService.showTagEditor(element.tags, allTagKeys, imageUrl, element.dimensionTags);
-        if(tags == null) return;
-        element.tags = tags;
-        this.uploadService.refreshTagsCount(element);
-        this.rerender();
-  
-      }finally {        
-        if(imageUrl)
-        {
-          window.URL.revokeObjectURL(imageUrl);
-        }
-      }
+      return this.editTagsOfFiles([element]);
   }
 
   ngOnDestroy() {

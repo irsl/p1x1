@@ -49,6 +49,7 @@ export class ImageMetaInfoService {
         if(!doPrefixTags) return tags;
         var clone = {};
         for(let q of Object.keys(tags)){
+            if((!q)||(q=="undefined")) continue;
             var v = tags[q];
             clone[prefix+"."+q] = v;
         }

@@ -94,7 +94,7 @@ export class ImageEffectsComponent implements OnInit {
 
           await this.uploadService.processFilesToUpload(files, false, false);
 
-          await this.uploadService.upload(this.currentCatalog, files, {});
+          await this.uploadService.upload(this.currentCatalog, files);
       
      });
 

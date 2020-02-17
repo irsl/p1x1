@@ -131,7 +131,7 @@ export class UploadService {
     {
        return fileToUpload.arrayBuffer ? fileToUpload.arrayBuffer.byteLength : fileToUpload.file.size;
     }
-    public async upload(destinationCatalog: ICatalog, filesToUpload: FileToUpload[], globalTags: StringKeyValuePairs = {}){
+    public async upload(destinationCatalog: ICatalog, filesToUpload: FileToUpload[]){
         // var callback = CatalogService.swallow;
         var sumFiles = 0;
         var sumSize = 0;
@@ -157,7 +157,7 @@ export class UploadService {
                   mtime: q.file ? new Date(q.file.lastModified) : new Date(),
                   originalData: ab,
                   versions: [],
-                  tags: {...q.tags, ...q.dimensionTags, ...globalTags},
+                  tags: {...q.tags, ...q.dimensionTags},
               };
               if(Helper.isImage(q.fileType))
               {
