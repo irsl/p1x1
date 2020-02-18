@@ -100,7 +100,7 @@
                             </ng-container>
         
                     <tr mat-header-row *matHeaderRowDef="columns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: columns;" (click)="doShowRightPane(row, true)"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;" (click)="doShowRightPane(row, true)" [ngClass]="{'active' : (row==lastClickedRow)}"></tr>
                     <tr mat-footer-row *matFooterRowDef="columns"></tr>
                   </table>
                   <mat-paginator [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons></mat-paginator>

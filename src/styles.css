@@ -196,3 +196,7 @@ label input[type=checkbox] {
 table tr td .mat-form-field-infix {
     width:auto !important;
 }
+
+[mat-row].active {
+   background: rgba(0,0,0,.075);
+}
