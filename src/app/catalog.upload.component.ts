@@ -31,7 +31,9 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
   private lastClickedIsImage: boolean;
   showRightPane: boolean = false;
   private showRightPaneCurrent: boolean = false;
+  private showMoreTags: boolean = false;
   private tagsToShow: TagKeyValue[] = [];
+  private moreTagsToShow: TagKeyValue[] = [];
 
   destinationCatalogId: string;
   destinationCatalog: ICatalog;
@@ -106,6 +108,9 @@ async doShowRightPane(row: FileToUpload, rowClick?: boolean)
    else if((this.selection.selected.length == 1)&&(this.selection.selected[0] == this.lastClickedRow))
       this.showRightPaneCurrent = true;
    
+   this.moreTagsToShow = [];
+   this.showMoreTags = false;
+
    if((this.showRightPaneCurrent)&&(this.lastClickedRow)){
        this.lastClickedIsImage = Helper.isImage(this.lastClickedRow.fileType);
 
@@ -132,6 +137,7 @@ async doShowRightPane(row: FileToUpload, rowClick?: boolean)
    } else {
       this.tagsToShow = Helper.tagsToHash( this.getTagsOfFiles(this.selection.selected) ); 
    }
+   Helper.selectCustomAndGenericTags(this.tagsToShow, this.moreTagsToShow);
 }
 getAllTagsOfFile(file: FileToUpload): StringKeyValuePairs
 {
@@ -299,6 +305,10 @@ getTagsOfFiles(files: FileToUpload[]): StringKeyValuePairs
     }
 
 
+  }
+  doShowMoreTags(){
+    this.showMoreTags=true;
+    return false;
   }
   
   async openTagEditor(element: FileToUpload)

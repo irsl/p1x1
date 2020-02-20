@@ -63,7 +63,9 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   private lastClickedPreview: string;
   private lastClickedIsImage: boolean;
 
+  private showMoreTags: boolean = false;
   private tagsToShow: TagKeyValue[] = [];
+  private moreTagsToShow: TagKeyValue[] = [];
   currentViewWithLargeIcons: ThumbnailAndCatalogAndCatalogFileInfo [] = [];
 
   private selection: SelectionModel<CatalogAndCatalogFileInfo>
@@ -459,7 +461,8 @@ showAllTags(){
 
      // it did not work anyway:
      // location.hash = "info-panel";
-
+     this.showMoreTags = false;
+     this.moreTagsToShow = [];
      if(this.showRightPaneCurrent){
          this.lastClickedIsImage = Helper.isImage(this.lastClickedRow.original.file.getContentType());
 
@@ -478,6 +481,11 @@ showAllTags(){
      } else {
         this.tagsToShow = Helper.tagsToHash( this.getTagsOfFiles(this.selection.selected) ); 
      }
+     Helper.selectCustomAndGenericTags(this.tagsToShow, this.moreTagsToShow);
+  }
+  doShowMoreTags(){
+    this.showMoreTags=true;
+    return false;
   }
   getTagsOfFiles(files: CatalogAndCatalogFileInfo[]): StringKeyValuePairs{
     var allTags = files.map(x=>x.original.file.getTags());

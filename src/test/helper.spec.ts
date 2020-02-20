@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Helper, ComparisonOperator } from '../app/helper';
+import { Helper, ComparisonOperator, TagKeyValue } from '../app/helper';
 import { CatalogFile, CatalogCapability } from 'src/app/catalog.service';
-import { TagWeightPairs, StringKeyValuePairs } from '../app/catalog.common';
+import { TagWeightPairs, StringKeyValuePairs, TagKeyValuePairs } from '../app/catalog.common';
 
 describe('buffer helper functions', ()=>{
     
@@ -208,6 +208,13 @@ describe('Helper', () => {
         expect(aclone.data).toBe("XfoobarX");
     });
     
+    it("tag classificaiton", ()=>{
+        var tagsToShow : TagKeyValue[] = [{human: "exif.value=foobar", key: "exif.value", value: "foobar"}, {human: "imi", key: "imi", value: ""}, {human: "exif.value2=foobar", key: "exif.value2", value: "foobar"}, ];
+        var moreTagsToShow : TagKeyValue[] = [];
+        Helper.selectCustomAndGenericTags(tagsToShow, moreTagsToShow);
+        expect(tagsToShow).toEqual([{human: "imi", key: "imi", value: ""}]);
+        expect(moreTagsToShow).toEqual([{human: "exif.value=foobar", key: "exif.value", value: "foobar"}, {human: "exif.value2=foobar", key: "exif.value2", value: "foobar"}]);
+    })
     it("tag statistics transformation", ()=>{
         var v: TagWeightPairs = { a: 1, b: 2};
         var cd = Helper.transformTagStatisticsToCloudData(v);

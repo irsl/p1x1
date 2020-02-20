@@ -34,6 +34,20 @@ export class Helper {
         return Helper.createRaw(TCreator, anyData, true);
     }
 
+    public static selectCustomAndGenericTags(tagsToShow: TagKeyValue[], moreTagsToShow: TagKeyValue[]) {
+        for(var i = 0; i < tagsToShow.length; i++)
+        {
+            var tag = tagsToShow[i];
+            if(tag.key.match(/^(exif|media|content|date|hash)\./))
+            {
+                // generic tag
+                moreTagsToShow.push(tag);
+                Helper.deleteArrayValue(tagsToShow, tag);
+                i--;
+            }
+        }
+    }
+    
     public static imageDimensionsToTags(dimensions: PictureSize): TagKeyValuePairs 
     {
         if(!dimensions) return {};

@@ -249,9 +249,11 @@
       <div class="do-break-words">
         <mat-chip-list>
             <mat-chip  *ngFor="let tag of tagsToShow">{{tag.human}}</mat-chip>
+            <mat-chip [hidden]="!showMoreTags && tagsToShow.length" *ngFor="let tag of moreTagsToShow">{{tag.human}}</mat-chip>
         </mat-chip-list>      
       </div>
-      <div *ngIf="tagsToShow.length <= 0">No tags to show.</div>
+      <div [hidden]="!moreTagsToShow || !moreTagsToShow.length || showMoreTags || !tagsToShow.length" class="text-center margin-top"><a href (click)="doShowMoreTags()">Show more tags</a></div>
+      <div *ngIf="tagsToShow.length <= 0 && moreTagsToShow.length <= 0">No tags to show.</div>
     </div>
   </div>
 </div><!-- row -->
