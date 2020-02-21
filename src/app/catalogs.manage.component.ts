@@ -27,12 +27,25 @@ export class CatalogsManageComponent implements OnDestroy, OnInit, AfterViewInit
     masterKeysColumns: string[] = ['connectionId', 'comment', 'actionsMasterKeys'];
     masterKeysDatasource : MatTableDataSource<MasterKeyInfo>;
 
+    settingsReadonly: boolean = true;
+    settingsStr: string;
+    showSettings: boolean = false;
+
     @ViewChild('connectionsPaginator', {static: true}) connectionsPaginator: MatPaginator;
     @ViewChild('masterKeysPaginator', {static: true}) masterKeysPaginator: MatPaginator;
     @ViewChildren(MatSort) sorters !: QueryList<MatSort>;
 
     constructor(private world: WorldService, private modalService: ModalService)
     {
+    }
+
+    editSettings(readonly: boolean)
+    {
+        this.settingsReadonly = readonly;
+        if(readonly)
+        {
+            this.calculateSettingsString();
+        }
     }
 
     applyConnectionsFilter(filterValue: string) {
@@ -140,10 +153,35 @@ export class CatalogsManageComponent implements OnDestroy, OnInit, AfterViewInit
             this.refreshConnections();
         });
         this.refreshConnections();
+
+        this.calculateSettingsString();
     }
     ngOnDestroy(): void {
        // Do not forget to unsubscribe the event
        // this.world.openRootCatalog.unsubscribe();
+    }
+
+    calculateSettingsString()
+    {
+        this.settingsStr = this.world.exportSettings();
+    }
+
+    doShowSettings()
+    {
+        this.showSettings = true;
+        this.calculateSettingsString()
+    }
+
+    async saveSettings()
+    {
+        try{
+            await this.world.importSettings(this.settingsStr);
+            this.world.saveSettings();
+            this.settingsReadonly = true;
+        }catch(e)
+        {
+            this.modalService.showErrorPrompt("Failed to save settings: "+e);
+        }
     }
 
 }

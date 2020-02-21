@@ -97,3 +97,17 @@
 
         </div>
   
+
+        <h1 class="h3 mb-2 text-gray-800">Import/export settings</h1>
+
+        <div [hidden]="!showSettings">
+        <div class="text-center"><textarea [(ngModel)]="settingsStr" [readonly]="settingsReadonly" class="form-control" rows="20"></textarea></div>
+        <div class="text-center margin-top">
+           <button [hidden]="!settingsReadonly" class="btn btn-default" (click)="editSettings(false)">Edit</button>
+           <button [hidden]="settingsReadonly" class="btn btn-success" (click)="saveSettings()">Save settings</button>
+           <button [hidden]="settingsReadonly" class="btn btn-default" (click)="editSettings(true)">Cancel</button>
+        </div>
+        </div>
+        <div [hidden]="showSettings" class="text-center"><button class="btn btn-success" (click)="doShowSettings()">Show raw settings</button></div>
+
+        <br/>

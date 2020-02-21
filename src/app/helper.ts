@@ -392,6 +392,12 @@ export class Helper {
         }
         return v;
     }
+    
+    public static createRawJson<T>(TCreator: { new (): T; }, jsonStr: string)
+    {
+        return this.createRaw(TCreator, JSON.parse(jsonStr), true);
+    }
+
     public static createRaw<T>(TCreator: { new (): T; }, data: any, callFromJson: boolean = false): T
     {
         if((callFromJson)&&(TCreator["fromJSON"]))

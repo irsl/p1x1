@@ -55,6 +55,19 @@ const cachedMasterKeysKey = "pixi-master-keys";
 
 export const RootCatalogName = NameOfCombinedCatalogRoot;
 
+class CompleteSettings {
+    user: PixiUserSettings;
+    connections: PixiConnectionSettings;
+    cachedMasterKeys: CachedMasterKeysSettings;
+
+    static fromJSON(data: any): CompleteSettings
+    {        
+        console.log("shit0", data)
+        data["connections"] = PixiConnectionSettings.fromJSON(data["connections"]);
+        console.log("shit", data)
+        return data;        
+    }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -98,6 +111,25 @@ export class WorldService implements OnInit {
            this.cachedMasterKeySettings = Helper.create(CachedMasterKeysSettings, {cachedMasterKeys: []});
     }
 
+    public exportSettings(): string
+    {
+        var re = Helper.createRaw(CompleteSettings, {
+            user: this.userSettings,
+            connections: this.connections,
+            cachedMasterKeys: this.cachedMasterKeySettings,
+        });
+        return JSON.stringify(re, null, 3);
+    }
+    public async importSettings(str: string): Promise<void>
+    {
+        var re = Helper.createRawJson(CompleteSettings, str);
+        this.connections = re.connections;
+        this.userSettings = re.user;
+        this.cachedMasterKeySettings = re.cachedMasterKeys;
+
+        this.combinedCatalog = this.catalogService.NewCombinedCatalog();
+        await this.ngOnInit();
+    }
     public getCurrentCatalog(): ICatalog
     {
         if(!this.currentlySelectedCatalogId) return null;
@@ -301,6 +333,12 @@ export class WorldService implements OnInit {
     private saveMasterKeySettings()
     {
         this.localStorage.set(cachedMasterKeysKey, this.cachedMasterKeySettings);
+    }
+    public saveSettings()
+    {
+        this.saveUserSettings();
+        this.saveConnections();
+        this.saveMasterKeySettings();
     }
     public async rememberMasterKey(conn: S3Connection, jwk: JsonWebKey, comment: string): Promise<void> {
         var m : MasterKeyInfo = {
