@@ -5,6 +5,7 @@ node node_modules\@angular\cli\bin\ng build --prod --base-href https://irsl.gith
 del /F /Q gh-pages\*.js gh-pages\*.html gh-pages\*.png gh-pages\assets\js\*.* gh-pages\*.gif gh-pages\*.eot gh-pages\*.woff2 gh-pages\*.txt gh-pages\*.ttf gh-pages\*.svg gh-pages\*.css gh-pages\*.woff
 xcopy dist\p1x1 gh-pages /E
 cd gh-pages
+copy index.html 404.html
 git add .
 git commit -m "deploy"
 git push
