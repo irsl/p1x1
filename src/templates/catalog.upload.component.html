@@ -80,12 +80,12 @@
                         <ng-container matColumnDef="fileType">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
                             <td mat-cell *matCellDef="let element"> {{element.fileType}} </td>
-                            <td mat-footer-cell *matFooterCellDef></td>
+                            <td mat-footer-cell *matFooterCellDef>{{ allFiles }} file(s)</td>
                           </ng-container>
                           <ng-container matColumnDef="sizeHuman">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
                                 <td mat-cell *matCellDef="let element"> {{element.sizeHuman}} </td>
-                                <td mat-footer-cell *matFooterCellDef>{{ allFiles }} file(s), {{ fullSizeHuman }}</td>
+                                <td mat-footer-cell *matFooterCellDef>{{ fullSizeHuman }}</td>
                               </ng-container>
                               <ng-container matColumnDef="tagsCount">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Tags </th>
