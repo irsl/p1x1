@@ -38,7 +38,7 @@ export class ImageMetaInfoService {
             if((type == "object")&&(!Helper.isNumber(rawValue)))
                return;
 
-            var value = tags[keyName].toString().trim();
+            var value = (tags[keyName]||"").toString().trim();
             if(!value) return;
 
             re[keyName] = value;
