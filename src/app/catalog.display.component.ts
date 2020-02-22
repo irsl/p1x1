@@ -110,7 +110,9 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
     this.sort.sort({ id: newMode, start: direction, disableClear: false });
 
     //ugly hack
-    (this.sort.sortables.get(newMode) as MatSortHeader)._setAnimationTransitionState({ toState: "active" });
+    var header = (this.sort.sortables.get(newMode) as MatSortHeader);
+    if(header)
+       header._setAnimationTransitionState({ toState: "active" });
 
     this.prepareLargeIcons();
   }
