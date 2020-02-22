@@ -742,7 +742,7 @@ export class Filter {
     }
 
     static escapeTag(str: string){
-        return str.replace("\\", "\\\\").replace("!", "\\!");
+        return str.replace(/\\/g, "\\\\").replace(/!/g, "\\!").replace(/ /g, "\\ ");
     }
 
     static readNextToken(str: string): TokenParseResult

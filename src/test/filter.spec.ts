@@ -474,6 +474,7 @@ describe("filter expression parsing", ()=>{
 
   it("escapeing", ()=>{
      expect(Filter.escapeTag("Foobar!")).toBe('Foobar\\!');
+     expect(Filter.escapeTag("cats and dogs")).toBe('cats\\ and\\ dogs');
   })
 
 })
