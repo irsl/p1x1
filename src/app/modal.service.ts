@@ -12,6 +12,7 @@ import { Validate } from './formbuilder.common';
 import { Helper } from './helper';
 import { PixiValidators } from './pixivalidators';
 import { SafeUrl } from '@angular/platform-browser';
+import { ICatalog } from './catalog.service';
 
 interface Event {
     severity: EventSeverity;
@@ -344,6 +345,26 @@ export class CreateNewProtectedCatalogForm
 }
 
 @Component({
+    templateUrl: '../templates/modal.catalogchooser.component.html'
+})
+export class CatalogChooserComponent {
+
+    modal: NgbModalRef;
+
+    selectedCatalog: string = null;
+    catalogs: ICatalog[]
+    title: string;
+
+    doReturn(){
+        for(let q of this.catalogs)
+        {
+            if(q.getUniqueId() == this.selectedCatalog)
+               return this.modal.close(q);
+        }
+    }
+}
+
+@Component({
     templateUrl: '../templates/modal.createnewstandardcatalog.component.html'
 })
 export class CreateNewStandardCatalogComponent  {
@@ -415,7 +436,17 @@ export class ModalService {
         return await modalRef.result;
     }
 
+    async showCatalogChooser(title: string, catalogs: ICatalog[]): Promise<ICatalog> {
+        var modalService = this.modalService;
+        var modalRef = modalService.open(CatalogChooserComponent,  defaultOpenParameters);
+        var comp = (modalRef.componentInstance as CatalogChooserComponent)
+        comp.catalogs = catalogs;
+        comp.title = title;
+        comp.modal = modalRef;
 
+        return await modalRef.result;        
+    }
+    
     openEventCallbackForm(title: string, openImmediately: boolean) : IEventCallbackManager
     {
         var eventsArray : Event[] = [];

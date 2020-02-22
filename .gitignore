@@ -4,6 +4,7 @@ minio-home/.minio.sys/buckets/**
 minio-home/.minio.sys/multipart/**
 minio-home/.minio.sys/tmp/**
 minio-home/bucket-via-webui/**
+minio-home/bucket-via-webui2/**
 minio-home/new-dupe/**
 minio-home/pwmgmt/**
 minio-home/recovery-delete-clear/**

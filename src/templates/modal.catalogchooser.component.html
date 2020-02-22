@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{ title }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <mat-form-field class="full-width">
+        <mat-label>Select catalog:</mat-label>
+        <select matNativeControl required [(ngModel)]="selectedCatalog" >
+          <option *ngFor="let catalog of catalogs" [value]="catalog.getUniqueId()">
+            {{catalog.getShortId()}}
+          </option>
+        </select>
+      </mat-form-field>
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="doReturn()" [disabled]="!selectedCatalog">Select</button>
+    <button type="button" class="btn btn-light" (click)="modal.dismiss()">Cancel</button>
+  </div>

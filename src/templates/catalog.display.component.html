@@ -181,6 +181,8 @@
             <button class="btn btn-danger"  (confirmAction)="removeSelectedFiles()" confirmMessage="Do you really want to remove the selected file?"><i class="fas fa-trash-alt"></i> Remove selected</button>
             &nbsp;
             <button class="btn btn-secondary" (click)="editTagsOfSelectedFiles()"><i class="fas fa-tags"></i> Tag editor</button>
+            &nbsp;
+            <button class="btn btn-secondary" (click)="moveSelectedFiles()"><i class="fas fa-truck-moving"></i> Move</button>
           </span>
 
           <span *ngIf="shareFilesClear || shareFilesProtected">
@@ -196,7 +198,9 @@
               <button class="btn btn-danger"  (confirmAction)="removeFile(this.selection.selected[0])" confirmMessage="Do you really want to remove this file?"><i class="fas fa-trash-alt"></i> Remove</button>
               &nbsp;
               <button class="btn btn-secondary" (click)="openTagEditor(this.selection.selected[0])"><i class="fas fa-tags"></i> Tag editor</button>
-          </span>
+              &nbsp;
+              <button class="btn btn-secondary" (click)="moveFile(this.selection.selected[0])"><i class="fas fa-truck-moving"></i> Move</button>
+            </span>
 
           <span *ngIf="shareFilesClear || shareFilesProtected">
             &nbsp;
@@ -231,6 +235,8 @@
                 <button class="btn btn-danger"  (confirmAction)="removeFile(lastClickedRow)" confirmMessage="Do you really want to remove this file?"><i class="fas fa-trash-alt"></i> Remove</button>
                 &nbsp;
                 <button class="btn btn-secondary" (click)="openTagEditor(lastClickedRow)"><i class="fas fa-tags"></i> Tag editor</button>
+                &nbsp;
+                <button class="btn btn-secondary" (click)="moveFile(lastClickedRow)"><i class="fas fa-truck-moving"></i> Move</button>    
                 <span *ngIf="lastClickedIsImage">
                 &nbsp;
                 <button class="btn btn-secondary" [routerLink]="['/image/edit', lastClickedRow.original.catalog.getUniqueId(), lastClickedRow.fileHash ]"><i class="fas fa-exchange-alt"></i> Image effects</button>

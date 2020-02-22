@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { WorldService, ICatalogRoute, RootCatalogName } from './world.service';
 import { Filter, IFilter } from './filter';
-import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, StandardCatalog, StandardCatalogProtected, StandardCatalogClear, CombinedCatalog } from './catalog.service';
+import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, StandardCatalog, StandardCatalogProtected, StandardCatalogClear, CombinedCatalog, UploadFileDetails, CatalogFileVersionWithData } from './catalog.service';
 import { EventSeverity, TagNameContentType, StringKeyValuePairs } from './catalog.common';
 import { Helper, TagKeyValue } from './helper';
 import { MatTableDataSource } from '@angular/material/table';
@@ -510,7 +510,69 @@ showAllTags(){
 
      await this.rerender();
   }
+  moveFile(file: CatalogAndCatalogFileInfo)
+  {
+    return this.moveFiles([file]);
+  }
+  moveSelectedFiles()
+  {
+    return this.moveFiles(this.selection.selected);
+  }
+  async moveFiles(files: CatalogAndCatalogFileInfo[]): Promise<void>
+  {
+     var writeableCatalogs = this.world.combinedCatalog.getWriteableSubcatalogsRecursively();
+     var destinationCatalog : ICatalog = await this.modal.showCatalogChooser("Select destination catalog", writeableCatalogs);
+     if(!destinationCatalog) return;
 
+     console.log("just returned", destinationCatalog, files)
+
+     var events = this.modal.openEventCallbackForm(`Moving ${files.length} files to destination catalog ${destinationCatalog.getUniqueId()}`, true);
+     events.dontCloseAutomatically = true;
+     for(let q of files)
+     {
+        if(destinationCatalog.getUniqueId() == q.original.catalog.getUniqueId())
+        {
+          events.callback(EventSeverity.Info, `Not moving file ${q.filename} as it is already in the destination catalog`);
+          continue;
+        }
+
+        events.callback(EventSeverity.Info, `Moving file: ${q.filename}`);
+
+        events.callback(EventSeverity.Info, `Downloading the original.`);
+        var ab = await q.original.catalog.downloadOriginalFile(q.original.file);
+
+        var uploadDetails : UploadFileDetails = {
+          contentType: q.original.file.getContentType(),
+          filename: q.filename,
+          mtime: q.original.file.getMtimeDate(),
+          originalData: ab,
+          tags: q.original.file.tags,
+          versions: [],
+        };
+        for(let v of q.original.file.versions)
+        {
+           events.callback(EventSeverity.Info, `Downloading file version ${v.versionName}`);
+           var versionData = await q.original.catalog.downloadFileVersion(q.original.file, v.versionName);
+           var cd: CatalogFileVersionWithData = {
+             contentType: v.contentType,
+             versionName: v.versionName,
+             data: versionData,
+           }
+           uploadDetails.versions.push(cd);
+        }
+        
+        events.callback(EventSeverity.Info, `Uploading to the destination.`);
+        await destinationCatalog.uploadFile(uploadDetails, events.callback);
+
+        events.callback(EventSeverity.Info, `Removing from source catalog.`);
+        q.original.catalog.removeFile(q.original.file, events.callback);
+     }
+
+     events.callback(EventSeverity.Info, `Operation was completed successfully.`);
+     events.autoCloseUnlessWarnings();
+
+     await this.rerender();
+  }
   async download(q: CatalogAndCatalogFileInfo)
   {
      var ab = await q.original.catalog.downloadOriginalFile(q.original.file);
