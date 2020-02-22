@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { ImageService, ThumbnailDescriptor } from './image.service';
 import { VideoService, DefaultCanvasSnapshotContentType } from './video.service';
 import { ImageClassifierService } from './image.classifier.service';
+import { callbackify } from 'util';
 
 export interface FileToUpload {
     file: File,
@@ -58,16 +59,22 @@ export class UploadService {
           return await Helper.fileToArrayBuffer(q.file);
       }
        
-      public async processFilesToUpload(filesToUpload: FileToUpload[], extractExifTags: boolean, executeTensorFlow: boolean, minProbability: number = 0) {      
+      public async processFilesToUpload(filesToUpload: FileToUpload[], extractExifTags: boolean, executeTensorFlow: boolean, minProbability: number = 0, callback: (x:number)=>void = null) {      
         var modal = this.modalService;
         var meta = this.metaService;
         var processed = 0;
         while(true)
         {
             var toBeProcessed = this.getFilesToBeProcessed(filesToUpload);
-            if(toBeProcessed.length <= 0) break;
+            var remaining = toBeProcessed.length;
+            if(remaining <= 0) break;
+
             for(let q of toBeProcessed)
             {
+                if(callback)
+                   callback(remaining);
+                remaining--;
+
                 // console.log("processing", q)
                 q.dimensionTags = {};
                 q.tags = {};

@@ -35,6 +35,8 @@ export class CatalogUploadComponent implements OnInit, OnDestroy {
   private tagsToShow: TagKeyValue[] = [];
   private moreTagsToShow: TagKeyValue[] = [];
 
+  remainingItems: number = 0;
+
   destinationCatalogId: string;
   destinationCatalog: ICatalog;
   filesToUpload : FileToUpload[] = [];
@@ -211,7 +213,9 @@ getTagsOfFiles(files: FileToUpload[]): StringKeyValuePairs
       if(this.backgroundProcessingInProgress) return;
       this.backgroundProcessingInProgress = true;
       try{
-        await this.uploadService.processFilesToUpload(this.filesToUpload, this.extractExifTags, this.executeTensorFlow, this.tensorFlowMinProbability);
+        await this.uploadService.processFilesToUpload(this.filesToUpload, this.extractExifTags, this.executeTensorFlow, this.tensorFlowMinProbability, (remaining)=>{
+          this.remainingItems = remaining;
+        });
       }finally{
         this.backgroundProcessingInProgress = false;
         this.rerender();  
