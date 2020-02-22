@@ -142,6 +142,12 @@ div.buttons button {
 }
 
 .imageBox {
+    margin-right: 1px;
+    margin-bottom: 1px;
+    float: left;
+}
+
+.imageBoxWF {
     margin-right: 25px;
     margin-bottom: 25px;
     padding: 10px;
@@ -149,20 +155,20 @@ div.buttons button {
     float: left;
     background: white;
     border: 1px solid #4e73df;
-    width: 175px;
 }
 
-.imageBoxImage {
+.imageBoxImageWF {
     width: 150px;
     height: 150px;
     overflow: hidden;
 }
-.imageBoxImage img {
+.imageBoxImageWF img {
     max-width: 150px;
     max-height: 150px;
 }
 
-.imageBoxCaption {
+.imageBoxCaptionWF {
+    width: 150px;
     margin-top: 10px;
     word-wrap: break-word;
     /* white-space: normal;*/

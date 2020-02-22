@@ -8,10 +8,17 @@
       <div [hidden]="!filter">Compiled expression: {{filter?.asString()}}</div>
       <div [hidden]="!filterError" class="text-danger">Compilation failure: {{filterError}}</div>
       </div>
-      <div class="col-sm-3 buttons margin-top">
-          <button [ngClass]="{'btn-info': viewType=='table',     'btn-light': viewType!='table'}"      class="btn btn-large" (click)="setViewMode('table')"><i class="fas fa-receipt"></i> Details</button>
-          &nbsp;
-          <button [ngClass]="{'btn-info': viewType=='largeIcons','btn-light': viewType!='largeIcons'}" class="btn btn-large" (click)="setViewMode('largeIcons')"><i class="fas fa-th-large"></i> Large icon</button>
+      <div class="col-sm-5 buttons margin-top text-right">
+        <span class="dropdown" >
+          <button class="btn btn-secondary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-eye"></i> View
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                
+              <a class="dropdown-item" href (clickNoPropagate)="setViewMode('table')"><i *ngIf="viewType=='table'" class="fas fa-check"></i> Table with details</a>
+              <a class="dropdown-item" href (clickNoPropagate)="setViewMode('largeIconsWithFilenames')"><i *ngIf="viewType=='largeIconsWithFilenames'" class="fas fa-check"></i> Large icons with filenames</a>
+              <a class="dropdown-item" href (clickNoPropagate)="setViewMode('largeIcons')"><i *ngIf="viewType=='largeIcons'" class="fas fa-check"></i> Large icons</a>
+          </div>
+        </span>        
           &nbsp;
           <span class="dropdown" >
               <button class="btn btn-secondary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -19,7 +26,7 @@
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                
                 <span *ngFor="let sortMode of availableSortModes">
-                   <a *ngFor="let dir of ['asc','desc']"  class="dropdown-item" href (clickNoPropagate)="setLargeIconsSortMode(sortMode, dir)"><i *ngIf="sort.active==sortMode && sort.direction==dir" class="fas fa-check"></i> {{sortMode}} ({{dir}})</a>
+                   <a *ngFor="let dir of ['asc','desc']"  class="dropdown-item" href (clickNoPropagate)="setSortMode(sortMode, dir)"><i *ngIf="sort.active==sortMode && sort.direction==dir" class="fas fa-check"></i> {{sortMode}} ({{dir}})</a>
                 </span>
               </div>
             </span>
@@ -93,25 +100,40 @@
 
      </div>
   </div>
-  <div [hidden]="viewType!='largeIcons'">
+  <div [hidden]="viewType!='largeIconsWithFilenames'">
 
      <div [hidden]="!hits || !hits.length">
 
-       <div class="imageBoxContainer">
-          <div *ngFor="let cv of currentViewWithLargeIcons" class="imageBox">
-             <div class="imageBoxImage"><a href (clickNoPropagate)="display(cv.catInfo)"><img [src]="cv.thumbnail"></a></div>
-             <div class="imageBoxCaption"><a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)">{{cv.catInfo.filename}}</a></div>
+       <div class="imageBoxWFContainer">
+          <div *ngFor="let cv of currentViewWithLargeIconsWF" class="imageBoxWF">
+             <div class="imageBoxImageWF"><a href (clickNoPropagate)="display(cv.catInfo)"><img [src]="cv.thumbnail"></a></div>
+             <div class="imageBoxCaptionWF"><a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)">{{cv.catInfo.filename}}</a></div>
           </div>
        </div>
 
        <br class="clear-fix" />
 
-       <mat-paginator #largeIconsPaginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+       <mat-paginator #largeIconsPaginatorWF [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
 
      </div>
 
    </div>
 
+   <div [hidden]="viewType!='largeIcons'">
+
+    <div [hidden]="!hits || !hits.length">
+
+      <div class="imageBoxContainer">
+          <div class="imageBox" *ngFor="let cv of currentViewWithLargeIcons" ><a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)"><img [src]="cv.thumbnail"></a></div>
+      </div>
+
+      <br class="clear-fix" />
+
+      <mat-paginator #largeIconsPaginator [pageSizeOptions]="[50]" showFirstLastButtons></mat-paginator>
+
+    </div>
+
+  </div>
 
   <div [hidden]="!hits || hits?.length">
     <div class="alert alert-info" role="alert">

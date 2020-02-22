@@ -19,6 +19,7 @@ import { HelperService } from './helper.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
 const viewTypeLargeIcons = "largeIcons";
+const viewTypeLargeIconsWithFilenames = "largeIconsWithFilenames";
 const viewTypeTable = "table";
 
 interface CatalogAndCatalogFileInfo {
@@ -58,6 +59,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
 
   availableSortModes: string[] = ["filename", "tagCount", "fileSize", "uploadDate", "creationDateBestGuess"];
 
+  private largeIconsPageSubscriptionWF: Subscription;
   private largeIconsPageSubscription: Subscription;
 
   viewType = viewTypeTable;
@@ -72,6 +74,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   private tagsToShow: TagKeyValue[] = [];
   private moreTagsToShow: TagKeyValue[] = [];
   currentViewWithLargeIcons: ThumbnailAndCatalogAndCatalogFileInfo [] = [];
+  currentViewWithLargeIconsWF: ThumbnailAndCatalogAndCatalogFileInfo [] = [];
 
   private selection: SelectionModel<CatalogAndCatalogFileInfo>
     = new SelectionModel<CatalogAndCatalogFileInfo>(allowMultiSelect, initialSelection);
@@ -87,6 +90,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) sort : MatSort;
   @ViewChild('tablePaginator', {static: true}) tablePaginator: MatPaginator;
   @ViewChild('largeIconsPaginator', {static: true}) largeIconsPaginator: MatPaginator;
+  @ViewChild('largeIconsPaginatorWF', {static: true}) largeIconsPaginatorWF: MatPaginator;
 
   constructor(
     private route: ActivatedRoute, 
@@ -98,7 +102,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   {
   }
 
-  private setLargeIconsSortMode(newMode:string, direction: "asc"|"desc"){
+  private setSortMode(newMode:string, direction: "asc"|"desc"){
     //see: https://github.com/angular/components/issues/10242
 
     //reset state so that start is the first sort direction that you will see
@@ -108,7 +112,13 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
     //ugly hack
     (this.sort.sortables.get(newMode) as MatSortHeader)._setAnimationTransitionState({ toState: "active" });
 
-    this.prepareCurrentLargeIconsSubSet();
+    this.prepareLargeIcons();
+  }
+  prepareLargeIcons(){
+    if(this.viewType == viewTypeLargeIcons)
+       this.prepareCurrentLargeIconsSubSet();
+    if(this.viewType == viewTypeLargeIconsWithFilenames)
+       this.prepareCurrentLargeIconsSubSetWF();
   }
 
   ngOnDestroy() {
@@ -116,6 +126,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
     this.box.close();
 
     this.largeIconsPageSubscription.unsubscribe();
+    this.largeIconsPageSubscriptionWF.unsubscribe();
   }
 
   ngOnInit() {
@@ -133,8 +144,11 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
     })
 
     this.largeIconsPageSubscription = this.largeIconsPaginator.page.subscribe(()=>{
-       this.prepareCurrentLargeIconsSubSet();
-    })
+      this.prepareCurrentLargeIconsSubSet();
+    });
+    this.largeIconsPageSubscriptionWF = this.largeIconsPaginatorWF.page.subscribe(()=>{
+      this.prepareCurrentLargeIconsSubSetWF();
+    });
 
   }
 
@@ -346,7 +360,7 @@ async rerender()
       fileSize: q.file.getContentSize(),
       fileSizeHuman: Helper.humanFileSize(aFileSize),
       uploadDate: Helper.humanTimestamp(q.file.getUploadDate()),
-      creationDateBestGuess: Helper.humanTimestamp(q.file.getCreationDate() || q.file.getMtimeDate() || q.file.getUploadDate()),
+      creationDateBestGuess: Helper.humanTimestamp(q.file.getCreationDateBestGuess()),
     };
     this.hits.push(a);
 
@@ -372,36 +386,35 @@ async rerender()
   };
   this.datasource.paginator = this.tablePaginator;
 
-  this.largeIconsPaginator.pageIndex = 0;
-  this.largeIconsPaginator.length = this.hits.length;
-  this.prepareCurrentLargeIconsSubSet();
+  this.largeIconsPaginatorWF.pageIndex = 0;
+  this.largeIconsPaginatorWF.length = this.hits.length;
+  this.prepareLargeIcons();
 }
 
 setViewMode(newType: string){
   this.viewType = newType;
-  this.prepareCurrentLargeIconsSubSet();
+  this.prepareLargeIcons();
 }
-async prepareCurrentLargeIconsSubSet(){
-  this.currentViewWithLargeIcons = [];
-
-  if(this.viewType != viewTypeLargeIcons) return;
+async prepareCurrentLargeIconsSubSetGeneric(view: ThumbnailAndCatalogAndCatalogFileInfo[], paginator: MatPaginator)
+{
+  view.splice(0, view.length);
 
   //see: https://github.com/angular/components/issues/9205
   var sortedData = this.datasource.sortData(this.datasource.filteredData,this.datasource.sort);
 
-  var begin = this.largeIconsPaginator.pageIndex*this.largeIconsPaginator.pageSize;  
-  for(var i = begin; i < begin + this.largeIconsPaginator.pageSize; i++)
+  var begin = paginator.pageIndex*paginator.pageSize;  
+  for(var i = begin; i < begin + paginator.pageSize; i++)
   {        
       var hit = sortedData[i];
       if(!hit) break;
 
-      this.currentViewWithLargeIcons.push({
+      view.push({
          catInfo: hit,
          thumbnail: "", // TODO: some default generic pic
       });
   }
 
-  for(var q of this.currentViewWithLargeIcons) {
+  for(var q of view) {
       try
       {
         var ab = await q.catInfo.original.catalog.downloadFileVersion(q.catInfo.original.file, ThumbnailKeySmall);
@@ -411,7 +424,12 @@ async prepareCurrentLargeIconsSubSet(){
         // swallow        
       }
   }
-
+}
+async prepareCurrentLargeIconsSubSetWF(){
+  return this.prepareCurrentLargeIconsSubSetGeneric(this.currentViewWithLargeIconsWF, this.largeIconsPaginatorWF);
+}
+async prepareCurrentLargeIconsSubSet(){
+  return this.prepareCurrentLargeIconsSubSetGeneric(this.currentViewWithLargeIcons, this.largeIconsPaginator);
 }
 
 tagClicked(stuff: CloudData) {

@@ -265,8 +265,6 @@ export class ClickNoPropagateDirective {
         this.clickNoPropagate.emit();
         return false;
     }
-
-
 }
 
 @Directive({

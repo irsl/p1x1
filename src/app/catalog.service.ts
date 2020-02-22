@@ -91,6 +91,10 @@ export class CatalogFile {
         return this.getTags(TagNameContentPrefix);
     }
 
+    public getCreationDateBestGuess(): Date {
+        return this.getCreationDate() || this.getMtimeDate() || this.getUploadDate();
+    }
+    
     public static fromJSON(data: any): CatalogFile
     {
         if(data["versions"])
