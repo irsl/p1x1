@@ -149,6 +149,7 @@ div.buttons button {
     float: left;
     background: white;
     border: 1px solid #4e73df;
+    width: 150px;
 }
 
 .imageBoxImage {
@@ -164,7 +165,10 @@ div.buttons button {
 .imageBoxCaption {
     margin-top: 10px;
     word-wrap: break-word;
-    white-space: normal;
+    /* white-space: normal;*/
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 .clear-fix {
    clear: both;    
