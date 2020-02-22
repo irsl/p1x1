@@ -37,6 +37,7 @@
                               <a *ngIf="element.original.catalog != null" class="dropdown-item" href [routerLink]="['/catalog/display', element.catalogId]">Display</a>
                               <a *ngIf="element.original.catalog != null" class="dropdown-item" href (clickNoPropagate)="umount(element)">Unmount</a>
                               <a *ngIf="isProtected(element)" class="dropdown-item" href (clickNoPropagate)="displayMasterKeyForConnection(element)">Show master key</a>
+                              <a *ngIf="element['capManagePasswords']" class="dropdown-item" href  [routerLink]="['/catalog/passwords', element.catalogId]">Manage passwords</a>            
                               <div class="dropdown-divider"></div>
                               <a class="dropdown-item" href (clickNoPropagate)="forgetConnection(element)">Forget</a>
                             </div>

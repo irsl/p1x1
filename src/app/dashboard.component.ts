@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { WorldService } from './world.service';
 import { Router } from '@angular/router';
-import { ICatalog, IStats, CombinedCatalog, CatalogCapability } from './catalog.service';
+import { ICatalog, IStats, CombinedCatalog, CatalogCapability, CatalogService } from './catalog.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -65,12 +65,7 @@ export class DashboardComponent implements OnInit  {
            SumFileSizeHuman: Helper.humanFileSize(stats.SumFileSize),
         }
 
-        var capMap = Helper.getEnumMap(CatalogCapability);
-        for(let capStr of Object.keys(capMap)) {
-          var cap = capMap[capStr];
-          // console.log("checking shit", cap, capStr, q.isCapable(cap))
-          a["cap"+capStr] = q.isCapable(cap);
-        }
+        CatalogService.assignCapabilities(q, a);
 
         if(q instanceof CombinedCatalog)
            this.catalogRoot = a;

@@ -4,7 +4,7 @@ import { ModalService } from './modal.service';
 import { Crypto } from './crypto';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { CatalogCapability, StandardCatalogProtected } from './catalog.service';
+import { CatalogCapability, StandardCatalogProtected, CatalogService } from './catalog.service';
 import { MatSort } from '@angular/material/sort';
 
 
@@ -124,6 +124,10 @@ export class CatalogsManageComponent implements OnDestroy, OnInit, AfterViewInit
                 catalogId: x.rawConnection.getUniqueId(),
                 mounted: x.catalog != null ? "yes" : "no",
             }
+
+            
+            if(x.catalog)
+              CatalogService.assignCapabilities(x.catalog, re);
             return re;
         });
 

@@ -1460,6 +1460,16 @@ export class CatalogService {
     {
     }
 
+    static assignCapabilities(q: ICatalog, a: any) {
+        var capMap = Helper.getEnumMap(CatalogCapability);
+        for(let capStr of Object.keys(capMap)) {
+          var cap = capMap[capStr];
+          // console.log("checking shit", cap, capStr, q.isCapable(cap))
+          a["cap"+capStr] = q.isCapable(cap);
+        }
+    
+    }
+    
     private async doTestParentKey(rawCatalogIndex: RawCatalogIndexEncrypted, parentMasterKey: MasterKey = null): Promise<MasterKey>
     {
         try{
