@@ -13,13 +13,14 @@
           &nbsp;
           <button [ngClass]="{'btn-info': viewType=='largeIcons','btn-light': viewType!='largeIcons'}" class="btn btn-large" (click)="setViewMode('largeIcons')"><i class="fas fa-th-large"></i> Large icon</button>
           &nbsp;
-          <span class="dropdown" *ngIf="viewType=='largeIcons'">
+          <span class="dropdown" >
               <button class="btn btn-secondary" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Sort <i class="fas fa-sort"></i> 
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href (clickNoPropagate)="setLargeIconsSortMode('filename')"><i *ngIf="largeIconsSortMode=='filename'" class="fas fa-check"></i> Filename</a>
-                <a class="dropdown-item" href (clickNoPropagate)="setLargeIconsSortMode('uploadDate')"><i *ngIf="largeIconsSortMode=='uploadDate'" class="fas fa-check"></i> Upload date</a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">                
+                <span *ngFor="let sortMode of availableSortModes">
+                   <a *ngFor="let dir of ['asc','desc']"  class="dropdown-item" href (clickNoPropagate)="setLargeIconsSortMode(sortMode, dir)"><i *ngIf="sort.active==sortMode && sort.direction==dir" class="fas fa-check"></i> {{sortMode}} ({{dir}})</a>
+                </span>
               </div>
             </span>
       </div>
@@ -79,7 +80,7 @@
           </ng-container>
 
             <ng-container matColumnDef="fileSizeHuman">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Size </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="fileSize"> Size </th>
               <td mat-cell *matCellDef="let element"> {{element.fileSizeHuman}} </td>
               <td mat-footer-cell *matFooterCellDef>{{ sumSumFileSizeHuman }}</td>
             </ng-container>

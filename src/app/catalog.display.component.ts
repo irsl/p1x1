@@ -5,7 +5,7 @@ import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, Standa
 import { EventSeverity, TagNameContentType, StringKeyValuePairs } from './catalog.common';
 import { Helper, TagKeyValue } from './helper';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ModalService } from './modal.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -18,12 +18,16 @@ import { Subscription } from 'rxjs';
 import { HelperService } from './helper.service';
 import { ActivatedRoute, Params } from '@angular/router';
 
+const viewTypeLargeIcons = "largeIcons";
+const viewTypeTable = "table";
 
 interface CatalogAndCatalogFileInfo {
    original: CatalogAndCatalogFile,
    filename: string,
    fileHash: string,
    uploadDate: string,
+   creationDateBestGuess: string,
+   fileSize: number,
    fileSizeHuman: string,
    tagCount: number;
 }
@@ -52,10 +56,11 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   private showRightPaneCurrent: boolean = false;
   private currentCatalog: ICatalog;
 
-  private largeIconsPageSubscription: Subscription;
-  private largeIconsSortMode: string = 'filename';
+  availableSortModes: string[] = ["filename", "tagCount", "fileSize", "uploadDate", "creationDateBestGuess"];
 
-  viewType = "table";
+  private largeIconsPageSubscription: Subscription;
+
+  viewType = viewTypeTable;
 
   private allWriteable: boolean = false;
     
@@ -93,27 +98,17 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   {
   }
 
-  private setLargeIconsSortMode(newMode:string){
-    this.largeIconsSortMode = newMode;
-    this.sortLargeIconsStuff();
+  private setLargeIconsSortMode(newMode:string, direction: "asc"|"desc"){
+    //see: https://github.com/angular/components/issues/10242
+
+    //reset state so that start is the first sort direction that you will see
+    this.sort.sort({ id: null, start: direction, disableClear: false });
+    this.sort.sort({ id: newMode, start: direction, disableClear: false });
+
+    //ugly hack
+    (this.sort.sortables.get(newMode) as MatSortHeader)._setAnimationTransitionState({ toState: "active" });
+
     this.prepareCurrentLargeIconsSubSet();
-  }
-
-  private sortLargeIconsStuff() {
-    var sortColumn = this.largeIconsSortMode;
-    this.hits = this.hits.sort((a,b)=>{
-      var nameA = a[sortColumn];
-      var nameB = b[sortColumn];
-
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-    
-      return 0;
-    })
   }
 
   ngOnDestroy() {
@@ -348,8 +343,10 @@ async rerender()
       tagCount: q.file.getTagCount(),
       filename: q.file.getFilename(),
       fileHash: q.file.getSha256Hash(),
+      fileSize: q.file.getContentSize(),
       fileSizeHuman: Helper.humanFileSize(aFileSize),
       uploadDate: Helper.humanTimestamp(q.file.getUploadDate()),
+      creationDateBestGuess: Helper.humanTimestamp(q.file.getCreationDate() || q.file.getMtimeDate() || q.file.getUploadDate()),
     };
     this.hits.push(a);
 
@@ -362,14 +359,21 @@ async rerender()
   this.sumSumFileSizeHuman = Helper.humanFileSize(sumSumFileSize);
 
   this.datasource = new MatTableDataSource<CatalogAndCatalogFileInfo>(this.hits);
-  this.datasource.sort = this.sort;    
-  this.datasource.paginator = this.tablePaginator;
+  this.datasource.sort = this.sort;
+  
 
-  this.sortLargeIconsStuff();
+  // turning matsort into case-insensitive
+  this.datasource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+    if (typeof data[sortHeaderId] === 'string') {
+      return data[sortHeaderId].toLocaleLowerCase();
+    }
+  
+    return data[sortHeaderId];
+  };
+  this.datasource.paginator = this.tablePaginator;
 
   this.largeIconsPaginator.pageIndex = 0;
   this.largeIconsPaginator.length = this.hits.length;
-  this.sortLargeIconsStuff();
   this.prepareCurrentLargeIconsSubSet();
 }
 
@@ -380,12 +384,15 @@ setViewMode(newType: string){
 async prepareCurrentLargeIconsSubSet(){
   this.currentViewWithLargeIcons = [];
 
-  if(this.viewType != "largeIcons") return;
+  if(this.viewType != viewTypeLargeIcons) return;
+
+  //see: https://github.com/angular/components/issues/9205
+  var sortedData = this.datasource.sortData(this.datasource.filteredData,this.datasource.sort);
 
   var begin = this.largeIconsPaginator.pageIndex*this.largeIconsPaginator.pageSize;  
   for(var i = begin; i < begin + this.largeIconsPaginator.pageSize; i++)
-  {
-      var hit = this.hits[i];
+  {        
+      var hit = sortedData[i];
       if(!hit) break;
 
       this.currentViewWithLargeIcons.push({
