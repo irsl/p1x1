@@ -232,6 +232,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
     }
 
     var eventCallbackManager = this.modal.openEventCallbackForm("Saving tags", true);
+    eventCallbackManager.dontCloseAutomatically = true;
     try{
       var cats = {};
       for(let file of files){
