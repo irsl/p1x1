@@ -18,7 +18,16 @@ class PixiConnectionSettings {
         return Helper.create(PixiUserSettings, data);
     }
 }
-class PixiUserSettings {
+class PixiUserDisplaySortSettings {
+    id: string;
+    direction: "asc" | "desc";
+}
+class PixiUserDisplaySettings {
+    viewType: string;
+    sort: PixiUserDisplaySortSettings;
+}
+export class PixiUserSettings {
+    display: PixiUserDisplaySettings;
 }
 class CachedMasterKeysSettings {
     public cachedMasterKeys: MasterKeyInfo[];
@@ -49,7 +58,7 @@ export interface ICatalogRoute
 }
 
 
-const settingsKey = "pixi-user-settings";
+const userSettingsKey = "pixi-user-settings";
 const connectionsKey = "pixi-connections";
 const cachedMasterKeysKey = "pixi-master-keys";
 
@@ -96,9 +105,13 @@ export class WorldService implements OnInit {
     ) 
     {
         this.combinedCatalog = catalogService.NewCombinedCatalog();
-        this.userSettings = localStorage.get(PixiUserSettings, settingsKey);
+        this.userSettings = localStorage.get(PixiUserSettings, userSettingsKey);
         if(!this.userSettings)
-           this.userSettings = Helper.create(PixiUserSettings, {});
+        {
+            this.userSettings = Helper.createRaw(PixiUserSettings, {});
+        }
+        if(!this.userSettings.display) this.userSettings.display = {} as any;
+        if(!this.userSettings.display.sort) this.userSettings.display.sort = {} as any;
 
         this.connections = localStorage.get(PixiConnectionSettings, connectionsKey);
         if(!this.connections)
@@ -109,6 +122,11 @@ export class WorldService implements OnInit {
         this.cachedMasterKeySettings = localStorage.get(CachedMasterKeysSettings, cachedMasterKeysKey);
         if((!this.cachedMasterKeySettings)||(!this.cachedMasterKeySettings.cachedMasterKeys))
            this.cachedMasterKeySettings = Helper.create(CachedMasterKeysSettings, {cachedMasterKeys: []});
+    }
+
+    public getUserSettings(): PixiUserSettings
+    {
+        return this.userSettings;
     }
 
     public exportSettings(): string
@@ -321,9 +339,9 @@ export class WorldService implements OnInit {
         this.closeRootCatalog.emit(catalog);
     }
 
-    private saveUserSettings()
+    public saveUserSettings()
     {
-        this.localStorage.set(settingsKey, this.userSettings);
+        this.localStorage.set(userSettingsKey, this.userSettings);
     }
     private saveConnections()
     {

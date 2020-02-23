@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { WorldService, ICatalogRoute, RootCatalogName } from './world.service';
+import { WorldService, ICatalogRoute, RootCatalogName, PixiUserSettings } from './world.service';
 import { Filter, IFilter } from './filter';
 import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, StandardCatalog, StandardCatalogProtected, StandardCatalogClear, CombinedCatalog, UploadFileDetails, CatalogFileVersionWithData } from './catalog.service';
 import { EventSeverity, TagNameContentType, StringKeyValuePairs } from './catalog.common';
@@ -92,6 +92,8 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   @ViewChild('largeIconsPaginator', {static: true}) largeIconsPaginator: MatPaginator;
   @ViewChild('largeIconsPaginatorWF', {static: true}) largeIconsPaginatorWF: MatPaginator;
 
+  private userSettings: PixiUserSettings;
+
   constructor(
     private route: ActivatedRoute, 
     private world: WorldService, 
@@ -115,6 +117,10 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
        header._setAnimationTransitionState({ toState: "active" });
 
     this.prepareLargeIcons();
+
+    this.userSettings.display.sort.id = newMode;
+    this.userSettings.display.sort.direction = direction;
+    this.world.saveUserSettings();
   }
   prepareLargeIcons(){
     if(this.viewType == viewTypeLargeIcons)
@@ -132,6 +138,10 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.userSettings = this.world.getUserSettings();
+    this.setViewMode(this.userSettings.display.viewType || viewTypeTable);
+    this.setSortMode(this.userSettings.display.sort.id || "uploadDate", this.userSettings.display.sort.direction||"desc");
+
     this.world.openRootCatalog.subscribe(()=>{
         this.regenerate(this.route.snapshot.params);
     });
@@ -397,6 +407,8 @@ async rerender()
 setViewMode(newType: string){
   this.viewType = newType;
   this.prepareLargeIcons();
+  this.userSettings.display.viewType = newType;
+  this.world.saveUserSettings();
 }
 async prepareCurrentLargeIconsSubSetGeneric(view: ThumbnailAndCatalogAndCatalogFileInfo[], paginator: MatPaginator)
 {
