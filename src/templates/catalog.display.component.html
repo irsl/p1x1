@@ -273,8 +273,30 @@
           </div>
       </div>
 
-      <h5 class="margin-top" [hidden]="selection.selected.length <= 1">Common tags</h5>
-      <h5 class="margin-top" [hidden]="selection.selected.length > 1">Tags</h5>
+      <h5 class="margin-top tags" [hidden]="selection.selected.length <= 1" (clickNoPropagate)="doShowQuickTag()">Common tags <span class="add-tag-icon"><i class="fas fa-plus pointer"></i></span></h5>
+      <h5 class="margin-top tags" [hidden]="selection.selected.length > 1" (clickNoPropagate)="doShowQuickTag()">Tags <span class="add-tag-icon"><i class="fas fa-plus pointer"></i></span></h5>
+      <div *ngIf="showQuickAddTag" class="margin-top margin-bottom full-width-fields">
+
+        <mat-form-field>
+          <mat-chip-list #tagList aria-label="Tag selection">
+            <mat-chip *ngFor="let tag of tagsToBeAddedList">
+              {{tag.human}}
+              <mat-icon matChipRemove (removed)="removeQuickTag(tag)">cancel</mat-icon>
+            </mat-chip>
+            <input autofocus
+                  placeholder="Quickly add tag (press enter)"
+                  #instance="ngbTypeahead" 
+                  [ngbTypeahead]="tagsForTypeahead"
+                  placement="top-left"
+                  [matChipInputFor]="tagList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="addOnBlur"
+                  (matChipInputTokenEnd)="addQuickTag($event)">
+          
+          </mat-chip-list>
+        </mat-form-field>
+  
+      </div>
       <div class="do-break-words">
         <mat-chip-list>
             <mat-chip  *ngFor="let tag of tagsToShow">{{tag.human}}</mat-chip>

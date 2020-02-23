@@ -2,6 +2,9 @@
 .margin-top {
     margin-top: 20px;
 }
+.margin-bottom {
+    margin-bottom: 20px;
+}
 
 .console-like {
     /*
@@ -209,4 +212,14 @@ table tr td .mat-form-field-infix {
 
 [mat-row].active {
    background: rgba(0,0,0,.075);
+}
+
+.tags {
+    cursor: pointer;
+}
+.tags .add-tag-icon {
+    display: none;
+}
+.tags:hover .add-tag-icon {
+    display: inline;
 }

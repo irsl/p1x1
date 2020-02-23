@@ -14,9 +14,12 @@ import { ThumbnailKeySmall, ThumbnailKeyMedium } from './upload.service';
 import { PixiJsZip } from './jszip';
 import { BoxService, BoxOperations } from './box.service';
 import { CloudData } from 'angular-tag-cloud-module';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { HelperService } from './helper.service';
 import { ActivatedRoute, Params } from '@angular/router';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 
 const viewTypeLargeIcons = "largeIcons";
 const viewTypeLargeIconsWithFilenames = "largeIconsWithFilenames";
@@ -57,6 +60,8 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   private showRightPaneCurrent: boolean = false;
   private currentCatalog: ICatalog;
 
+  showQuickAddTag: boolean = false;
+  quickTag: string = "";
   availableSortModes: string[] = ["filename", "tagCount", "fileSize", "uploadDate", "creationDateBestGuess"];
 
   private largeIconsPageSubscriptionWF: Subscription;
@@ -93,6 +98,18 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   @ViewChild('largeIconsPaginatorWF', {static: true}) largeIconsPaginatorWF: MatPaginator;
 
   private userSettings: PixiUserSettings;
+  
+  tagsForTypeahead = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 1 ? []
+        : Array.from(this.currentCatalog.getTagKeysRecursively()).filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    )
+    
+  tagsToBeAdded: StringKeyValuePairs = {};    
+  tagsToBeAddedList: TagKeyValue[] = [];
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
 
   constructor(
     private route: ActivatedRoute, 
@@ -102,6 +119,50 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
     private helperService: HelperService,
   )
   {
+  }
+
+  private tagsToStrList(){
+    this.tagsToBeAddedList = [...Helper.tagsToHash(this.tagsToBeAdded)];
+  }
+  doShowQuickTag(){
+    this.showQuickAddTag = true;
+  }
+  removeQuickTag(tag: TagKeyValue){
+    delete this.tagsToBeAdded[tag.key];
+    this.tagsToStrList();
+  }
+  async addQuickTag(event: MatChipInputEvent){
+    const input = event.input;
+    const value = (event.value || "").trim();
+    if(!value)
+    {
+      // and now we need to save them all
+      var files : CatalogAndCatalogFileInfo[] = this.selection.selected.length ? this.selection.selected : [this.lastClickedRow];
+
+      var tags : StringKeyValuePairs = {...this.tagsToBeAdded};
+      this.tagsToBeAdded = {};
+      this.tagsToStrList();
+      var lc = this.lastClickedRow;
+      return this.completeEditTagsOfFiles(files, tags, null, true) // null => we are not removing anything
+        .then(()=>{
+           this.doShowRightPane(lc);
+        })
+    }
+
+    // Add our fruit
+    if (value) {
+        var x = value.split("=", 2);
+        if((x[0])&&(!Helper.isRestrictedTagNamespace(x[0])))
+        {
+          this.tagsToBeAdded[x[0]] = x[1] || "";
+          this.tagsToStrList();
+        }
+    }
+
+    // Reset the input value
+    if (input) {
+      input.value = '';
+    }
   }
 
   private setSortMode(newMode:string, direction: "asc"|"desc"){
@@ -204,32 +265,18 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
      }
      return re;
   }
-  async editTagsOfFiles(files: CatalogAndCatalogFileInfo[]){
-    var allOriginalTags = this.getTagsOfFiles(files);
-    var classifiedOriginalTags = Helper.classifyTags(allOriginalTags);
-    var originalTags = classifiedOriginalTags.unprotectedTags;
-
-    var uniqCatalogs : ICatalog = this.getUniqueCatalogs(files);    
-    var allUniqTags = Array.from(uniqCatalogs.getTagKeysRecursively());
-    // console.log("tags for autocomplete", allUniqTags);
-    var imageUrl = null;
-    if((files.length == 1)&&(files[0].original.file.isImage()))
-    {
-      var tb = await files[0].original.catalog.downloadFileVersion(files[0].original.file, ThumbnailKeyMedium);
-      if(tb) 
-      {
-        imageUrl = await Helper.arrayBufferToDataUrl(tb, files[0].original.file.getContentType())
-      }
-    }
-    var editedTags = await this.modal.showTagEditor(originalTags, allUniqTags, imageUrl, classifiedOriginalTags.protectedTags);
-    if(editedTags == null) return;
+  async completeEditTagsOfFiles(files: CatalogAndCatalogFileInfo[], editedTags: StringKeyValuePairs, originalTags: StringKeyValuePairs, closeImmediately: boolean){
+    if((editedTags == null)||(Object.keys(editedTags).length <= 0)) return;
     for(let file of files){
       var aTags = file.original.file.getTags();
 
       // removing the tags that were originally present
-      for(let originalTagKey of Object.keys(originalTags))
+      if(originalTags != null)
       {
-         delete aTags[originalTagKey];
+        for(let originalTagKey of Object.keys(originalTags))
+        {
+           delete aTags[originalTagKey];
+        }  
       }
 
       // and assigning the final ones:
@@ -255,12 +302,36 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
          var a: ICatalog = q as ICatalog;
          await a.initializeTags();
       }
-      eventCallbackManager.autoCloseUnlessWarnings();
-      this.rerender();
+      if(!closeImmediately) {
+        eventCallbackManager.autoCloseUnlessWarnings();
+        this.rerender();
+      } else {
+        eventCallbackManager.dismissUnlessWarnings();
+      }
       
     }catch(e){
       eventCallbackManager.callback(EventSeverity.Error, "Error while saving new tags: "+e.toString())
     }
+  }
+  async editTagsOfFiles(files: CatalogAndCatalogFileInfo[]){
+    var allOriginalTags = this.getTagsOfFiles(files);
+    var classifiedOriginalTags = Helper.classifyTags(allOriginalTags);
+    var originalTags = classifiedOriginalTags.unprotectedTags;
+
+    var uniqCatalogs : ICatalog = this.getUniqueCatalogs(files);    
+    var allUniqTags = Array.from(uniqCatalogs.getTagKeysRecursively());
+    // console.log("tags for autocomplete", allUniqTags);
+    var imageUrl = null;
+    if((files.length == 1)&&(files[0].original.file.isImage()))
+    {
+      var tb = await files[0].original.catalog.downloadFileVersion(files[0].original.file, ThumbnailKeyMedium);
+      if(tb) 
+      {
+        imageUrl = await Helper.arrayBufferToDataUrl(tb, files[0].original.file.getContentType())
+      }
+    }
+    var editedTags = await this.modal.showTagEditor(originalTags, allUniqTags, imageUrl, classifiedOriginalTags.protectedTags);
+    await this.completeEditTagsOfFiles(files, editedTags, originalTags, false);
   }
 
   editTagsOfSelectedFiles(){
@@ -405,6 +476,7 @@ async rerender()
 }
 
 setViewMode(newType: string){
+  this.showQuickAddTag = false;
   this.viewType = newType;
   this.prepareLargeIcons();
   this.userSettings.display.viewType = newType;
@@ -506,13 +578,15 @@ showAllTags(){
      if(this.showRightPaneCurrent){
          this.lastClickedIsImage = Helper.isImage(this.lastClickedRow.original.file.getContentType());
 
+         // refreshing tags here as they might have changed via the quick tag editor feature
+         this.tagsToShow = Helper.tagsToHash(this.lastClickedRow.original.file.getTags());
+
          if(previousLastClicked == this.lastClickedRow)
          {
            if(rowClick)
               this.showRightPane = !previousShowRightPane;
            return;
          }
-         this.tagsToShow = Helper.tagsToHash(this.lastClickedRow.original.file.getTags());
          this.lastClickedPreview = "";
 
          var tb = await c.original.catalog.downloadFileVersion(c.original.file, ThumbnailKeyMedium);
