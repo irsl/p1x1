@@ -106,7 +106,12 @@
 
        <div class="imageBoxWFContainer">
           <div *ngFor="let cv of currentViewWithLargeIconsWF" class="imageBoxWF">
-             <div class="imageBoxImageWF"><a href (clickNoPropagate)="display(cv.catInfo)"><img [src]="cv.thumbnail"></a></div>
+             <div class="imageBoxImageWF">
+                <a href (clickNoPropagate)="display(cv.catInfo)">
+                  <img [src]="cv.thumbnail">
+                  <i *ngIf="cv.catInfo.original.file.isVideo()" class="icon far fa-play-circle fa-2x"></i>
+                </a>
+             </div>
              <div class="imageBoxCaptionWF"><a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)">{{cv.catInfo.filename}}</a></div>
           </div>
        </div>
@@ -124,7 +129,12 @@
     <div [hidden]="!hits || !hits.length">
 
       <div class="imageBoxContainer">
-          <div class="imageBox" *ngFor="let cv of currentViewWithLargeIcons" ><a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)"><img [src]="cv.thumbnail"></a></div>
+          <div class="imageBox" *ngFor="let cv of currentViewWithLargeIcons" >
+            <a href (clickNoPropagate)="doShowRightPane(cv.catInfo, true)">
+               <img [src]="cv.thumbnail">
+               <i *ngIf="cv.catInfo.original.file.isVideo()" class="icon far fa-play-circle fa-2x"></i>
+              </a>
+          </div>
       </div>
 
       <br class="clear-fix" />
@@ -237,7 +247,12 @@
       <div *ngIf="showRightPaneCurrent">
           <h3 class="margin-top">Current file</h3>
           <div class="text-center">
-              <div><a href (clickNoPropagate)="display(lastClickedRow)"><img [src]="lastClickedPreview"></a></div>
+              <div class="video-overlay-wrapper">
+                <a href (clickNoPropagate)="display(lastClickedRow)">
+                  <img [src]="lastClickedPreview">
+                  <i *ngIf="lastClickedRow.original.file.isVideo()" class="icon far fa-play-circle fa-2x"></i>
+                </a>
+              </div>
           </div>
           <table>
               <tr>

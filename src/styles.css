@@ -148,6 +148,16 @@ div.buttons button {
     margin-right: 1px;
     margin-bottom: 1px;
     float: left;
+    position: relative;
+}
+.video-overlay-wrapper {
+    position: relative;
+}
+
+.imageBox .icon, .imageBoxImageWF .icon, .video-overlay-wrapper .icon {
+    position: absolute;
+    left: calc(50% - 16px);
+    top: calc(50% - 16px);
 }
 
 .imageBoxWF {
@@ -164,6 +174,7 @@ div.buttons button {
     width: 150px;
     height: 150px;
     overflow: hidden;
+    position: relative;
 }
 .imageBoxImageWF img {
     max-width: 150px;
