@@ -223,3 +223,7 @@ table tr td .mat-form-field-infix {
 .tags:hover .add-tag-icon {
     display: inline;
 }
+
+.modal-body video {
+   max-height: 100%;    
+}
