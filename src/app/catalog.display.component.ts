@@ -5,7 +5,7 @@ import { CatalogAndCatalogFile, ICatalog, CatalogCapability, CatalogFile, Standa
 import { EventSeverity, TagNameContentType, StringKeyValuePairs } from './catalog.common';
 import { Helper, TagKeyValue } from './helper';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { MatSort, MatSortHeader, SortDirection } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { ModalService } from './modal.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -50,6 +50,7 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
 
   catalogRoute: ICatalogRoute;
   hits: CatalogAndCatalogFileInfo[];
+  sortedData: CatalogAndCatalogFileInfo[];
   columns = ["select", "filename", "tagCount", "fileSizeHuman", "uploadDate"];
   datasource : MatTableDataSource<CatalogAndCatalogFileInfo>;
   private sumSumFileSizeHuman: string;
@@ -74,6 +75,9 @@ export class CatalogDisplayComponent implements OnInit, OnDestroy {
   private lastClickedRow: CatalogAndCatalogFileInfo;
   private lastClickedPreview: string;
   private lastClickedIsImage: boolean;
+
+  private prevSortDirection: SortDirection = null;
+  private prevSortActive: string = null;
 
   private showMoreTags: boolean = false;
   private tagsToShow: TagKeyValue[] = [];
@@ -431,8 +435,6 @@ async rerender()
   var sumSumFileSize = 0;
   var files = await this.currentCatalog.getFilesRecursively(this.filter);
 
-  this.box.clear();
-
   this.hits = [];
   for(let q of files) {
     var aFileSize = q.file.getContentSize();
@@ -448,8 +450,6 @@ async rerender()
     };
     this.hits.push(a);
 
-    this.box.addItem(a, a.filename, q.file.getContentType());
-
     sumSumFileSize += aFileSize;
     this.allTags += a.tagCount;
   }
@@ -458,6 +458,8 @@ async rerender()
 
   this.datasource = new MatTableDataSource<CatalogAndCatalogFileInfo>(this.hits);
   this.datasource.sort = this.sort;
+  this.sort.sortChange.subscribe(()=>{this.initSortData()});
+  this.initSortData(true);
   
 
   // turning matsort into case-insensitive
@@ -475,6 +477,18 @@ async rerender()
   this.prepareLargeIcons();
 }
 
+initSortData(force: boolean = false){
+  if((!force)&&(this.prevSortActive == this.datasource.sort.active)&&(this.prevSortDirection == this.datasource.sort.direction)) return;
+  this.prevSortActive = this.datasource.sort.active;
+  this.prevSortDirection = this.datasource.sort.direction;
+  this.sortedData = this.datasource.sortData(this.datasource.filteredData,this.datasource.sort);
+
+  this.box.clear();
+  for(let a of this.sortedData) {
+    this.box.addItem(a, a.filename, a.original.file.getContentType());
+  }  
+}
+
 setViewMode(newType: string){
   this.showQuickAddTag = false;
   this.viewType = newType;
@@ -487,12 +501,11 @@ async prepareCurrentLargeIconsSubSetGeneric(view: ThumbnailAndCatalogAndCatalogF
   view.splice(0, view.length);
 
   //see: https://github.com/angular/components/issues/9205
-  var sortedData = this.datasource.sortData(this.datasource.filteredData,this.datasource.sort);
 
   var begin = paginator.pageIndex*paginator.pageSize;  
   for(var i = begin; i < begin + paginator.pageSize; i++)
   {        
-      var hit = sortedData[i];
+      var hit = this.sortedData[i];
       if(!hit) break;
 
       view.push({
