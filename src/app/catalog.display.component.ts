@@ -472,6 +472,8 @@ async rerender()
   };
   this.datasource.paginator = this.tablePaginator;
 
+  this.largeIconsPaginator.pageIndex = 0;
+  this.largeIconsPaginator.length = this.hits.length;
   this.largeIconsPaginatorWF.pageIndex = 0;
   this.largeIconsPaginatorWF.length = this.hits.length;
   this.prepareLargeIcons();
