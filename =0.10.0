@@ -1,0 +1,4 @@
++ node-forge@0.10.0
+added 1 package from 5 contributors, updated 1 package and audited 1293 packages in 7.68s
+found 1703 vulnerabilities (1693 low, 3 moderate, 7 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
