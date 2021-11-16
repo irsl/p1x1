@@ -19,7 +19,7 @@
     "@types/offscreencanvas": "^2019.6.0",
     "angular-password-strength-meter": "0.0.4",
     "angular-tag-cloud-module": "^3.8.1",
-    "aws-sdk": "^2.546.0",
+    "aws-sdk": "^2.814.0",
     "buffer": "^5.4.3",
     "caman": "^4.1.2",
     "core-js": "2",
